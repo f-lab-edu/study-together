@@ -1,0 +1,34 @@
+/* 노멀라이즈 시작 */
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;   /* 해당 태그의 list-style을 none으로 하는 것으로 ●을 제거한다 */
+}
+
+a {
+    color: inherit;   /* 부모 엘리먼트의 값을 물려받는다 */
+    text-decoration: none;    /* 해당 태그의 text-decoration 속성을 none 값으로 하는 것으로 밑줄을 제거한다 */
+}
+/* 노멀라이즈 끝 */
+
+
+/* 사이트의 높이를 5000px로 만들어 스크롤 생성 */
+body {
+    height: 5000px;
+    background-color: #444;
+}
+
+/* 사이드바의 너비와 높이를 변수를 통해 통제 */
+:root {
+    --side-bar-width: 270px;
+    --side-bar-height: 90vh;
+}
+
+.side-bar {
+    position: fixed;    /* 스크롤을 따라오도록 지정 */
+    background-color: black;
+    width: var(--side-bar-width);
+    min-height: var(--side-bar-height);   /* 사이드바의 높이를 전체 화면 높이의 90%로 지정 */
+    margin-top: calc((100vh - var(--side-bar-height)) / 2);    /* 사이드바 위와 아래의 마진을 동일하게 지정 */
+}
+

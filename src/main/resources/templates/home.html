@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset = "utf-8">
+    <title>Study Together</title>
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+</head>
+
+<body>
+
+
+<aside class="side-bar">
+
+    <button class="btn btn-primary float-end"
+            onclick="location.href='scheduler.html'"
+            th:onclick="|location.href='@{/scheduler}'|"
+            type="button">Scheduler
+    </button>
+
+</aside>
+
+</body>
+</html>
