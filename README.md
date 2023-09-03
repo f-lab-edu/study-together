@@ -26,4 +26,4 @@
 - WebRTC : OpenVidu (Openvidu는 웹과 모바일 환경에서 영상 통화 기능을 쉽게 추가할 수 있도록 하는 오픈소스 플랫폼)
   
 ### ERD
-https://www.erdcloud.com/d/4QpxeewjF4rpRH3Kz
+https://www.erdcloud.com/d/SXY85jvx7GipunbrM
