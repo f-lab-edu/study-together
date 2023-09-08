@@ -19,15 +19,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.session:spring-session-core'
-	runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.5.2'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+

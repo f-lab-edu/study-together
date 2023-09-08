@@ -1,0 +1,1 @@
+insert into MEMBER ( seq_id , id ,pw , nickname ) values (1, 'testID','123','testNick');

@@ -18,12 +18,12 @@
 방 입장
 ![Homepage 4](https://github.com/wooni97/Algorithm-Data-Structure/assets/55667589/c446ccec-1b47-4943-a3be-016c8b1a18ea)
 개인별 monthly 스케줄러
-![Homepage](https://github.com/wooni97/JAVA-Spring/assets/55667589/e60c2ef4-be86-43a4-9863-42570af96183)
+
 
 
 
 ### 주요기술
-- WebRTC : OpenVidu (Openvidu는 웹과 모바일 환경에서 영상 통화 기능을 쉽게 추가할 수 있도록 하는 오픈소스 플랫폼)
+
   
 ### ERD
-![image](https://github.com/wooni97/JAVA-Spring/assets/55667589/d1aa2c06-629b-4294-b900-58f6ed09adb3)
+https://www.erdcloud.com/d/SXY85jvx7GipunbrM
