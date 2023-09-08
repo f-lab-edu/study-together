@@ -2,12 +2,26 @@ package dev.flab.simpleweather.domain.schedule;
 
 public class Todo {
 
-    int todoSeq;
-    int schedulerSeq;
-    int seqId;
-    String id;
-    String date;
-    String todo;
-    char check;
+    private int todoSeq;
+    private int schedulerSeq;
+    private int seqId;
+    private String id;
+    private String date;
+    private String todo;
+    private char check;
+
+    public enum checkGroup {
+        CHECKED("T"),
+        UNCHECKED("F");
+
+        private String status;
+        private checkGroup( String status) {
+            this.status = status;
+        }
+
+        public String getStatus(){
+            return status;
+        }
+    }
 
 }

@@ -10,9 +10,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Autowired
+
     public MemberService(MemberRepository memberRepository){
         this.memberRepository = memberRepository;
+    }
+
+    public String join(Member member){
+        memberRepository.save(member);
+        return member.getId();
     }
 
     public List<Member> findMembers(){

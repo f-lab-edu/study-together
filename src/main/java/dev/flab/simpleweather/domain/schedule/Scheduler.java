@@ -2,10 +2,10 @@ package dev.flab.simpleweather.domain.schedule;
 
 public class Scheduler {
 
-    int schedulerSeq;
-    String date;
-    String seqId;
-    String id;
+    private int schedulerSeq;
+    private String date;
+    private String seqId;
+    private String id;
 
 
 
