@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `MEMBERS`;
+DROP TABLE IF EXISTS `MEMBER`;
 
 CREATE TABLE `MEMBER` (
                           `seq_id`	int	NOT NULL,
@@ -6,6 +6,11 @@ CREATE TABLE `MEMBER` (
                           `pw`	varchar(20)	NOT NULL,
                           `nickname`	varchar(20)	NULL
 );
+ALTER TABLE `MEMBER` ALTER COLUMN `seq_id` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `MEMBER` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
+                                                             `seq_id`,
+                                                             `id`
+    );
 
 DROP TABLE IF EXISTS `Scheduler`;
 
@@ -48,6 +53,8 @@ CREATE TABLE `STUDY_ROOM` (
                               `status`	char(1)	NOT NULL	COMMENT 'T: 활성화/F:종료',
                               `manager_seq_id`	int	NOT NULL
 );
+ALTER TABLE `STUDY_ROOM` ALTER COLUMN `room_id` INT NOT NULL AUTO_INCREMENT;
+
 
 DROP TABLE IF EXISTS `PARTICIPANT`;
 
