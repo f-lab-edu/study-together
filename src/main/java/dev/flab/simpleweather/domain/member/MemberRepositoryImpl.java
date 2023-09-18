@@ -49,7 +49,9 @@ public class MemberRepositoryImpl implements MemberRepository{
 
     @Override
     public Optional<Member> findByID(String id) {
-        return Optional.empty();
+        List<Member> result = jdbcTemplate.query("select * from member where id = ?", memberRowMapper(), id);
+        Optional<Member> optionalMember = result.stream().findAny();
+        return optionalMember;
     }
 
     private RowMapper<Member> memberRowMapper(){
