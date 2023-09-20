@@ -20,7 +20,7 @@ public class StudyRoomForm {
     public int getTotal() {
         return total;
     }
-
+    /*
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
@@ -28,4 +28,5 @@ public class StudyRoomForm {
     public void setTotal(int total) {
         this.total = total;
     }
+     */
 }

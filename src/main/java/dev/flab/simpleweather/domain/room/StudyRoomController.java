@@ -22,6 +22,16 @@ public class StudyRoomController {
         this.studyRoomService = studyRoomService;
     }
 
+    @RequestMapping("/studyrooms")
+    public String toStudyRoomMain(HttpSession httpSession){
+        String id = (String) httpSession.getAttribute("id");
+        //로그인된 상태
+        if(id != null){
+            return "redirect:/studyroom_main.html";
+        }
+        return "login.html";
+
+    }
     @PostMapping("/api/v1/rooms")
     @ResponseBody
     public ResponseEntity<Message> create(StudyRoomForm studyRoomForm, HttpSession httpSession){

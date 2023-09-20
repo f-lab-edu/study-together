@@ -21,6 +21,12 @@ CREATE TABLE `Scheduler` (
                              `id`	varchar(30)	NOT NULL
 );
 
+ALTER TABLE `Scheduler` ALTER COLUMN `scheduler_seq` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `Scheduler` ADD CONSTRAINT `PK_SCHEDULER` PRIMARY KEY (
+
+                                                         `scheduler_seq`
+    );
+
 DROP TABLE IF EXISTS `TODO`;
 
 CREATE TABLE `TODO` (
@@ -28,10 +34,16 @@ CREATE TABLE `TODO` (
                         `scheduler_seq`	int	NOT NULL,
                         `seq_id`	int	NOT NULL,
                         `id`	varchar(30)	NOT NULL,
-                        `date`	char(8)	NOT NULL,
+                        `scheduler_date`	char(8)	NOT NULL,
                         `todo`	varchar(255)	NOT NULL,
-                        `check`	char(1)	NOT NULL	COMMENT 'T : 투두 체크 된 상태/F : 투두 체크 X 상태'
+                        `checked`	char(1)	NOT NULL	COMMENT 'T : 투두 체크 된 상태/F : 투두 체크 X 상태'
 );
+
+ALTER TABLE `TODO` ALTER COLUMN `todo_seq` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `TODO` ADD CONSTRAINT `PK_TODO` PRIMARY KEY (
+                                                             `todo_seq`,
+                                                             `scheduler_seq`
+    );
 
 DROP TABLE IF EXISTS `STUDY_TIME`;
 
