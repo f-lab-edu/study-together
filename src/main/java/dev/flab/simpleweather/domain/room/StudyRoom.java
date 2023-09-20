@@ -1,6 +1,11 @@
 package dev.flab.simpleweather.domain.room;
 
-import dev.flab.simpleweather.domain.status.Status;
+
+import dev.flab.simpleweather.system.Status;
+
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
