@@ -3,15 +3,14 @@ package dev.flab.simpleweather.domain.member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
 
-@RestController
+@Controller
 public class MemberController {
 
     private final MemberService memberService;
@@ -21,7 +20,8 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members/new")
+    @PostMapping("/members/join")
+    @ResponseBody
     public ResponseEntity<?> create(MemberForm memberForm){
 
         Member member = Member.of(memberForm.getId(), memberForm.getPw(), memberForm.getNickname());
@@ -37,16 +37,20 @@ public class MemberController {
             return "redirect:/login";
         }
         session.setAttribute("id", optionalMember.get().getId());
-        return "redirect:/";
+        session.setAttribute("seq_id", optionalMember.get().getSeqID());
+
+        return "redirect:/login";
     }
 
+
+    @RequestMapping("/login")
     public String toLoginPage(HttpSession session){
         String id = (String) session.getAttribute("id");
         //로그인된 상태
         if(id != null){
-            return "redirect:/";
+            return "main.html";
         }
-        return "login";
+        return "login.html";
 
     }
     @GetMapping("/members")
@@ -60,9 +64,9 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/members/register")
+    @RequestMapping("/members/join")
     public String MemberRegister(){
-        return "register.html";
+        return "join.html";
     }
 
 
