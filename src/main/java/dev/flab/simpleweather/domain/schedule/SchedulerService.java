@@ -11,8 +11,4 @@ public class SchedulerService {
         this.schedulerRepository = schedulerRepository;
     }
 
-    public Scheduler create(Scheduler scheduler){
-        schedulerRepository.createScheduler(scheduler);
-        return scheduler;
-    }
 }
