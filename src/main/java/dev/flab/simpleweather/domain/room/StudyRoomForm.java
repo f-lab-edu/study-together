@@ -7,10 +7,12 @@ import java.time.format.DateTimeFormatter;
 public class StudyRoomForm {
     private String roomName;
     private int total;
+    private LocalDate createDate;
 
     public StudyRoomForm(String roomName, int total) {
         this.roomName = roomName;
         this.total = total;
+        setCreateDate();
     }
 
     public String getRoomName() {
@@ -21,11 +23,13 @@ public class StudyRoomForm {
         return total;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public LocalDate getCreateDate() {
+        return createDate;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setCreateDate() {
+        this.createDate = LocalDate.now();
     }
+
+
 }

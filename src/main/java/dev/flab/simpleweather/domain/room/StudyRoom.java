@@ -17,18 +17,16 @@ public class StudyRoom {
     private String roomName;
     private int total;
     private int participantsNum;
-    private String createDate;
+    private LocalDate createDate;
     private Status status;
     private int managerSeqId;
 
-    private StudyRoom(String roomName, int total, HttpSession httpSession){
+    public StudyRoom(String roomName, int total, int managerSeqId, LocalDate createDate){
         this.roomName = roomName;
         this.total = total;
-        setCreateDate();
-        this.managerSeqId = (int)httpSession.getAttribute("seq_id");
+        this.managerSeqId = managerSeqId;
+        this.createDate = createDate;
     }
-
-
     public int getRoomId() {
         return roomId;
     }
@@ -49,15 +47,8 @@ public class StudyRoom {
         return participantsNum;
     }
 
-    private void setCreateDate() {
-        LocalDate now = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formatedNow = now.format(formatter);
 
-        this.createDate = formatedNow;
-
-    }
-    public String getCreateDate() {
+    public LocalDate getCreateDate() {
         return createDate;
     }
 
@@ -65,14 +56,12 @@ public class StudyRoom {
         return status;
     }
 
-    public int getManagerSeqId(HttpSession httpSession) {
+    public int getManagerSeqId(int managerSeqId) {
         return managerSeqId;
     }
 
 
-    public static StudyRoom of(String roomName, int total, HttpSession httpSession){
-        return new StudyRoom(roomName, total, httpSession);
-    }
+
 
 
 }

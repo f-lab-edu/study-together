@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.nio.charset.Charset;
 
-@Controller
+@RestController
 public class StudyRoomController {
 
     private final StudyRoomService studyRoomService;
@@ -23,21 +23,16 @@ public class StudyRoomController {
     }
 
     @PostMapping("/api/v1/rooms")
-    @ResponseBody
-    public ResponseEntity<Message> create(StudyRoomForm studyRoomForm, HttpSession httpSession){
+    public StudyRoomApiResponse create(StudyRoomForm studyRoomForm, HttpSession httpSession){
 
-        StudyRoom studyRoom = StudyRoom.of(studyRoomForm.getRoomName(), studyRoomForm.getTotal(), httpSession);
+        StudyRoom studyRoom = new StudyRoom(studyRoomForm.getRoomName(),
+                studyRoomForm.getTotal(),
+                (int)httpSession.getAttribute("seq_id"),
+                studyRoomForm.getCreateDate());
 
-        studyRoomService.create(studyRoom, httpSession);
+        int roomID = studyRoomService.create(studyRoom, httpSession);
 
-        Message message = new Message();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        message.setStatus(Message.StatusEnum.OK);
-        message.setData(studyRoom);
-
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new StudyRoomApiResponse(roomID);
     }
 
 }
