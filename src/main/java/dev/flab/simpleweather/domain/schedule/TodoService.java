@@ -2,6 +2,8 @@ package dev.flab.simpleweather.domain.schedule;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TodoService {
 
@@ -11,7 +13,7 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public int create(String[] todos, Scheduler scheduler){
+    public int create(List<String> todos, Scheduler scheduler){
         todoRepository.createTodo(todos, scheduler);
         return scheduler.getSchedulerSeq();
     }

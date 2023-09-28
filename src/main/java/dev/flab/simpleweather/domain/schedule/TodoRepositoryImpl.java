@@ -19,32 +19,22 @@ public class TodoRepositoryImpl implements TodoRepository {
     }
 
     @Override
-    public int createTodo(String[] todos,Scheduler scheduler) {
+    public void createTodo(List<String> todos, Scheduler scheduler) {
 
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 
-        //List<String> todos = schedulerForm.getTodos();
         jdbcInsert.withTableName("TODO").usingGeneratedKeyColumns("TODO_SEQ");
-        for(String todo : todos){
+
+        for(String newTodo : todos){
+            Todo todo = Todo.of(scheduler.getSchedulerSeq(), newTodo, Todo.CheckStatus.UNCHECKED);
 
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("SCHEDULER_SEQ", scheduler.getSchedulerSeq());
-            parameters.put("SEQ_ID", scheduler.getSeqId());
-            parameters.put("ID", scheduler.getId());
-            parameters.put("SCHEDULER_DATE", scheduler.getDate());
-            parameters.put("TODO", todo );
-            parameters.put("CHECKED", "F");
+            parameters.put("SCHEDULER_SEQ", todo.getSchedulerSeq());
+            parameters.put("TODO", newTodo );
+            parameters.put("CHECKED", todo.getCheckStatus().getStatus());
 
             Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         }
 
-
-        /*
-
-        int roomId = key.intValue();
-        studyRoom.setRoomId(roomId);
-
-         */
-        return scheduler.getSchedulerSeq();
     }
 }

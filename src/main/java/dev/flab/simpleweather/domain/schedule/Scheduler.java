@@ -7,17 +7,12 @@ import java.time.format.DateTimeFormatter;
 public class Scheduler {
 
     private int schedulerSeq;
-    private String date;
-    private String seqId;
+    private LocalDate date;
+    private int seqId;
     private String id;
 
-    public Scheduler(HttpSession httpSession, String date) {
-        this.seqId = httpSession.getAttribute("seq_id").toString();
-        this.id = httpSession.getAttribute("id").toString();
-        this.date = date;
-    }
 
-    public Scheduler(int schedulerSeq, String date, String seqId, String id) {
+    public Scheduler(int schedulerSeq, LocalDate date, int seqId, String id) {
         this.schedulerSeq = schedulerSeq;
         this.date = date;
         this.seqId = seqId;
@@ -28,35 +23,19 @@ public class Scheduler {
         return schedulerSeq;
     }
 
-    public void setSchedulerSeq(int schedulerSeq) {
-        this.schedulerSeq = schedulerSeq;
-    }
-
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-
-
-    public String getSeqId() {
+    public int getSeqId() {
         return seqId;
     }
-
 
     public String getId() {
         return id;
     }
 
 
-
-
-    public static Scheduler of(HttpSession httpSession, String date){
-
-        return new Scheduler(httpSession, date);
-    }
-    public static Scheduler ofWithSeqID(int schedulerSeq, String date, String seqId, String id){
-        return new Scheduler(schedulerSeq, date, seqId, id);
-    }
 
 
 }

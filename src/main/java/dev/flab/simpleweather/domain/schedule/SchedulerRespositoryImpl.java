@@ -1,16 +1,14 @@
 package dev.flab.simpleweather.domain.schedule;
 
-import dev.flab.simpleweather.domain.member.Member;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,59 +22,41 @@ public class SchedulerRespositoryImpl implements SchedulerRepository {
     }
 
     @Override
-    public Scheduler createScheduler(Scheduler scheduler) {
+    public Optional<Scheduler> find(int seqId, LocalDate date){
 
-        List<Scheduler> result = jdbcTemplate.query(
-                "select * from scheduler where seq_id = ? and date = ?", schedulerRowMapper(), scheduler.getSeqId(), scheduler.getDate());
+        try {
+            Scheduler scheduler = jdbcTemplate.queryForObject(
+                    "select * from scheduler where member_seq_id = ? and date = ?", schedulerRowMapper(), seqId, date);
 
-        if(result.isEmpty()){
-            SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-            jdbcInsert.withTableName("SCHEDULER").usingGeneratedKeyColumns("scheduler_seq");
-
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("date", scheduler.getDate());
-            parameters.put("seq_id", scheduler.getSeqId());
-            parameters.put("id", scheduler.getId());
-
-
-            Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-            int schedulerSeq = key.intValue();
-            scheduler.setSchedulerSeq(schedulerSeq);
-
-            return scheduler;
+            return Optional.of(scheduler);
         }
-        else {
-            scheduler.setSchedulerSeq(result.get(0).getSchedulerSeq());
-            return scheduler;
+        catch (EmptyResultDataAccessException e){
+            return Optional.empty();
         }
 
+    }
+    @Override
+    public Scheduler createScheduler(LocalDate date, int seqId, String id) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("SCHEDULER").usingGeneratedKeyColumns("scheduler_seq");
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("date", date);
+        parameters.put("member_seq_id", seqId);
+        parameters.put("member_id", id);
 
 
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
+        int schedulerSeq = key.intValue();
 
+        return new Scheduler(schedulerSeq, date, seqId, id);
     }
 
     private RowMapper<Scheduler> schedulerRowMapper(){
-        return new RowMapper<Scheduler>() {
-            @Override
-            public Scheduler mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                Scheduler scheduler = Scheduler.ofWithSeqID(
-                        rs.getInt("scheduler_seq"),
-                        rs.getString("date"),
-                        rs.getString("seq_id"),
-                        rs.getString("id"));
-
-                /*
-                member.setSeqID(rs.getInt("seq_id"));
-                member.setId(rs.getString("id"));
-                member.setPw(rs.getString("pw"));
-                member.setNickname(rs.getString("nickname"));
-
-
-                return member;
-*/
-                return scheduler;
-            }
-        };
+        return (rs, rowNum) -> new Scheduler(
+                rs.getInt("scheduler_seq"),
+                rs.getDate("date").toLocalDate(),
+                rs.getInt("seq_id"),
+                rs.getString("id"));
     }
 }
