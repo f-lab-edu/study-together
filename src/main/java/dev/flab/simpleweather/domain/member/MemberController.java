@@ -4,17 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 
-@RestController
+@Controller
 public class MemberController {
 
     private final MemberService memberService;
@@ -24,7 +20,8 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members/new")
+    @PostMapping("/members/join")
+    @ResponseBody
     public ResponseEntity<?> create(MemberForm memberForm){
 
         Member member = Member.of(memberForm.getId(), memberForm.getPw(), memberForm.getNickname());
@@ -33,7 +30,29 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
+    @PostMapping("/login")
+    public String login(String id, String pw, HttpSession session){
+        Optional<Member> optionalMember = memberService.login(id, pw);
+        if(optionalMember.isEmpty()){
+            return "redirect:/login";
+        }
+        session.setAttribute("id", optionalMember.get().getId());
+        session.setAttribute("seq_id", optionalMember.get().getSeqID());
 
+        return "redirect:/login";
+    }
+
+
+    @RequestMapping("/login")
+    public String toLoginPage(HttpSession session){
+        String id = (String) session.getAttribute("id");
+        //로그인된 상태
+        if(id != null){
+            return "main.html";
+        }
+        return "login.html";
+
+    }
     @GetMapping("/members")
     public ResponseEntity<?> readAll() {
         List<Member> members = memberService.findMembers();
@@ -45,9 +64,9 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/members/register")
+    @RequestMapping("/members/join")
     public String MemberRegister(){
-        return "register.html";
+        return "join.html";
     }
 
 

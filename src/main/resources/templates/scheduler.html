@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='utf-8' />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
-            });
-            calendar.render();
-        });
-
-    </script>
+  <meta charset="UTF-8">
+  <title>스케줄러</title>
 </head>
 <body>
-<div id='calendar'></div>
+<form action="/api/v1/schedulers" method="post">
+  <h2>로그인222</h2>
+  <div>
+    <input type="text" name="date"/>
+
+  </div>
+  <div>
+    <input type="text" name="todos"/>
+    <input type="text" name="todos"/>
+    <input type="text" name="todos"/>
+    <input type="text" name="todos"/>
+  </div>
+  <button type ="submit">제출</button>
+</form>
 </body>
 </html>

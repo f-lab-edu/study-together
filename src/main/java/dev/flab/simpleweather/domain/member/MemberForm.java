@@ -2,8 +2,6 @@ package dev.flab.simpleweather.domain.member;
 
 public class MemberForm {
 
-
-
     private String id;
     private String pw;
     private String nickname;

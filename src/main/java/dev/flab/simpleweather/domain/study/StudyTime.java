@@ -1,6 +1,7 @@
 package dev.flab.simpleweather.domain.study;
 
-import dev.flab.simpleweather.domain.status.Status;
+
+import dev.flab.simpleweather.system.Status;
 
 public class StudyTime {
     private String date;

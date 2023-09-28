@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.session:spring-session-core'
@@ -25,9 +26,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.5.2'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+
 }
 
 tasks.named('test') {
