@@ -23,6 +23,7 @@ public class MemberAPIController {
     }
 
     @PostMapping("/members/join")
+    @PostMethodLog
     public String create(MemberForm memberForm){
 
         Member member = Member.of(memberForm.getId(), memberForm.getPw(), memberForm.getNickname());
@@ -33,6 +34,7 @@ public class MemberAPIController {
     }
 
     @PostMapping("/login")
+    @PostMethodLog
     public String login(String id, String pw, HttpSession session) {
         try {
             Member member = memberService.login(id, pw);

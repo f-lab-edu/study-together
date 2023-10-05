@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MemberController {
 
     @GetMapping("/login")
+    @GetMethodLog
     public String tologinPage() {
         return "login.html";
     }
 
     @GetMapping("/join")
+    @GetMethodLog
     public String toJoinPage() {
         return "join.html";
     }

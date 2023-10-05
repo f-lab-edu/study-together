@@ -36,6 +36,7 @@ public class SchedulerController {
     //스케줄러 생성 API
     @PostMapping("/api/v1/schedulers")
     @ResponseBody
+    @PostMethodLog
     public SchedulerApiResponse create(@RequestParam String date,@RequestParam List<String> todos,
     HttpSession httpSession){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
