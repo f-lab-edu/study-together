@@ -19,24 +19,24 @@ public class SchedulerTodoService {
     }
 
 
-    public SchedulerApiResponse create(int seqId, String id, SchedulerTodoForm schedulerTodoForm) {
+    public SchedulerApiResponse create(int seqId, String id, LocalDate date, List<String> todos) {
 
 
-        Optional<Scheduler> result = schedulerRepository.find(seqId, schedulerTodoForm.getDate());
+        Optional<Scheduler> result = schedulerRepository.find(seqId, date);
         SchedulerApiResponse schedulerApiResponse = new SchedulerApiResponse();
         //이쪽 코드가 중복되는것 같아..좀 이상하다고 생각 드는데
         if(result.isEmpty()){
-            Scheduler scheduler = schedulerRepository.createScheduler(schedulerTodoForm.getDate(), seqId, id);
-            todoRepository.createTodo(schedulerTodoForm.getTodos(), scheduler);
+            Scheduler scheduler = schedulerRepository.createScheduler(date, seqId, id);
+            todoRepository.createTodo(todos, scheduler);
             schedulerApiResponse.setSchedulerSeq(scheduler.getSchedulerSeq());
-            schedulerApiResponse.setTodos(schedulerTodoForm.getTodos());
+            schedulerApiResponse.setTodos(todos);
 
             return schedulerApiResponse;
         }else{
             Scheduler scheduler = result.get();
-            todoRepository.createTodo(schedulerTodoForm.getTodos(), scheduler);
+            todoRepository.createTodo(todos, scheduler);
             schedulerApiResponse.setSchedulerSeq(scheduler.getSchedulerSeq());
-            schedulerApiResponse.setTodos(schedulerTodoForm.getTodos());
+            schedulerApiResponse.setTodos(todos);
 
             return schedulerApiResponse;
         }

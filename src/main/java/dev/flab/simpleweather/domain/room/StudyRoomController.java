@@ -1,6 +1,7 @@
 package dev.flab.simpleweather.domain.room;
 
-import dev.flab.simpleweather.system.Message;
+
+import dev.flab.simpleweather.aop.PostMethodLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class StudyRoomController {
     }
 
     @PostMapping("/api/v1/rooms")
+    @PostMethodLog
     public StudyRoomApiResponse create(StudyRoomForm studyRoomForm, HttpSession httpSession){
 
         StudyRoom studyRoom = new StudyRoom(studyRoomForm.getRoomName(),
@@ -30,7 +32,7 @@ public class StudyRoomController {
                 (int)httpSession.getAttribute("seq_id"),
                 studyRoomForm.getCreateDate());
 
-        int roomID = studyRoomService.create(studyRoom, httpSession);
+        int roomID = studyRoomService.create(studyRoom, (int)httpSession.getAttribute("seq_id"));
 
         return new StudyRoomApiResponse(roomID);
     }

@@ -12,7 +12,7 @@ public class Member {
         this.nickname = nickname;
     }
 
-    private Member(int seqID, String id, String pw, String nickname){
+    public Member(int seqID, String id, String pw, String nickname){
         this.seqID = seqID;
         this.id = id;
         this.pw = pw;
@@ -39,8 +39,6 @@ public class Member {
     public static Member of(String id, String pw, String nickname) {
         return new Member(id, pw, nickname);
     }
-    public static Member ofWithSeqID(int seqID, String id, String pw, String nickname) {
-        return new Member(seqID, id, pw, nickname);
-    }
+
 
 }

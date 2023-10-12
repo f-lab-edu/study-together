@@ -1,14 +1,12 @@
 package dev.flab.simpleweather.domain.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +34,6 @@ public class MemberRepositoryImpl implements MemberRepository{
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         member.setSeqID(key.intValue());
 
-
-
         return member;
     }
 
@@ -49,35 +45,21 @@ public class MemberRepositoryImpl implements MemberRepository{
 
     @Override
     public Optional<Member> findByID(String id) {
-        List<Member> result = jdbcTemplate.query("select * from member where id = ?", memberRowMapper(), id);
-        Optional<Member> optionalMember = result.stream().findAny();
-        return optionalMember;
+
+        try {
+            Member member = jdbcTemplate.queryForObject("select * from member where id = ?", memberRowMapper(), id);
+            return Optional.of(member);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     private RowMapper<Member> memberRowMapper(){
-        return new RowMapper<Member>() {
-            @Override
-            public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-
-                Member member = Member.ofWithSeqID(
-                        rs.getInt("seq_id"),
-                        rs.getString("id"),
-                        rs.getString("pw"),
-                        rs.getString("nickname"));
-
-                /*
-                member.setSeqID(rs.getInt("seq_id"));
-                member.setId(rs.getString("id"));
-                member.setPw(rs.getString("pw"));
-                member.setNickname(rs.getString("nickname"));
-
-
-                return member;
-*/
-                 return member;
-            }
-        };
+        return (rs, rowNum) -> new Member(
+                rs.getInt("seq_id"),
+                rs.getString("id"),
+                rs.getString("pw"),
+                rs.getString("nickname"));
     }
 
 }
