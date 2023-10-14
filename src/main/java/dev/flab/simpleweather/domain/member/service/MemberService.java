@@ -1,11 +1,10 @@
-package dev.flab.simpleweather.domain.member;
+package dev.flab.simpleweather.domain.member.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.flab.simpleweather.domain.member.entity.Member;
+import dev.flab.simpleweather.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import dev.flab.simpleweather.domain.member.dto.MemberServiceDto;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -17,8 +16,8 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public int join(Member member){
-        memberRepository.save(member);
+    public int create(MemberServiceDto memberServiceDto){
+        Member member = memberRepository.save(memberServiceDto.toEntity());
         return member.getSeqID();
     }
 
@@ -28,14 +27,8 @@ public class MemberService {
         if(member.getPw().equals(pw)){
             return member;
         }
-        else {
-            throw new NoSuchElementException();
-        }
+        else {throw new NoSuchElementException();}
     }
 
 
-
-    public List<Member> findMembers(){
-        return memberRepository.findAll();
-    }
 }

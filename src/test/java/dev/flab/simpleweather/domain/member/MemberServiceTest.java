@@ -1,10 +1,12 @@
 package dev.flab.simpleweather.domain.member;
 
+import dev.flab.simpleweather.domain.member.entity.Member;
+import dev.flab.simpleweather.domain.member.repository.MemberRepository;
+import dev.flab.simpleweather.domain.member.service.MemberService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.swing.text.html.Option;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

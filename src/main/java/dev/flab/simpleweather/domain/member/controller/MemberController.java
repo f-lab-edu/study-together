@@ -1,4 +1,4 @@
-package dev.flab.simpleweather.domain.member;
+package dev.flab.simpleweather.domain.member.controller;
 
 import dev.flab.simpleweather.aop.GetMethodLog;
 import org.springframework.stereotype.Controller;

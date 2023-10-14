@@ -1,5 +1,6 @@
-package dev.flab.simpleweather.domain.member;
+package dev.flab.simpleweather.domain.member.repository;
 
+import dev.flab.simpleweather.domain.member.entity.Member;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,12 +9,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class MemberRepositoryImpl implements MemberRepository{
+public class MemberRepositoryImpl implements MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -32,15 +32,7 @@ public class MemberRepositoryImpl implements MemberRepository{
         parameters.put("NICKNAME", member.getNickname());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        member.setSeqID(key.intValue());
-
-        return member;
-    }
-
-    @Override
-    public List<Member> findAll() {
-        return jdbcTemplate.query("select * from member", memberRowMapper());
-
+        return new Member(key.intValue(), member.getId(), member.getPw(), member.getNickname());
     }
 
     @Override
