@@ -1,5 +1,6 @@
-package dev.flab.simpleweather.domain.schedule;
+package dev.flab.simpleweather.domain.schedule.service;
 
+import dev.flab.simpleweather.domain.schedule.repository.SchedulerRepository;
 import org.springframework.stereotype.Service;
 
 @Service

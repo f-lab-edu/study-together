@@ -1,5 +1,6 @@
-package dev.flab.simpleweather.domain.schedule;
+package dev.flab.simpleweather.domain.schedule.repository;
 
+import dev.flab.simpleweather.domain.schedule.entity.Scheduler;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,28 +36,25 @@ public class SchedulerRespositoryImpl implements SchedulerRepository {
         }
 
     }
+
     @Override
-    public Scheduler createScheduler(LocalDate date, int seqId, String id) {
+    public Scheduler createScheduler(LocalDate date, int seqId) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("SCHEDULER").usingGeneratedKeyColumns("scheduler_seq");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("date", date);
         parameters.put("member_seq_id", seqId);
-        parameters.put("member_id", id);
-
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         int schedulerSeq = key.intValue();
-
-        return new Scheduler(schedulerSeq, date, seqId, id);
+        return new Scheduler(schedulerSeq, date, seqId);
     }
 
     private RowMapper<Scheduler> schedulerRowMapper(){
         return (rs, rowNum) -> new Scheduler(
                 rs.getInt("scheduler_seq"),
                 rs.getDate("date").toLocalDate(),
-                rs.getInt("seq_id"),
-                rs.getString("id"));
+                rs.getInt("member_seq_id"));
     }
 }
