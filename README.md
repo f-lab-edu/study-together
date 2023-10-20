@@ -13,17 +13,8 @@
 4. 방 만들기
 
 ### 예상 UI (제작중)
-입장할 방 선택
-![Homepage 2](https://github.com/wooni97/Algorithm-Data-Structure/assets/55667589/9d64e1fa-a4c4-4ea5-ab20-878b4dd08ea5)
-방 입장
-![Homepage 4](https://github.com/wooni97/Algorithm-Data-Structure/assets/55667589/c446ccec-1b47-4943-a3be-016c8b1a18ea)
-개인별 monthly 스케줄러
-
-
-
 
 ### 주요기술
-
   
 ### ERD
 https://www.erdcloud.com/d/SXY85jvx7GipunbrM
