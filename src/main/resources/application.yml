@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    active: default, test
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+
+  datasource:
+    jdbc-url: jdbc:h2:tcp://localhost:9093/~/study_together_db
+    driver-class-name: org.h2.Driver
+    username: sa
+  sql:
+    init:
+      mode: always
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+  logging:
+    level:
+      org:
+        springframework:
+          nodeValue: INFO
+          web: DEBUG
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+---
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: sa
+    url: jdbc:h2:mem:STUDY_TOGETHER_TEST_DB
+    h2:
+      console:
+        enabled: 'true'
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:schema.sql
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+  logging:
+    level:
+      org:
+        springframework:
+          nodeValue: INFO
+          web: DEBUG
+  config:
+    activate:
+      on-profile: test
+
