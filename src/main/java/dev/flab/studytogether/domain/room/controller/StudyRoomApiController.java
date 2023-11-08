@@ -6,12 +6,15 @@ import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.StudyRoomApiResponse;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
 import dev.flab.studytogether.utils.SessionUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 
 @RestController
+@Tag(name = "Study Rooom", description = "스터디룸 API")
 public class StudyRoomApiController {
     private final StudyRoomService studyRoomService;
 
@@ -22,6 +25,7 @@ public class StudyRoomApiController {
 
     @PostMapping("/api/v1/rooms")
     @PostMethodLog
+    @Operation(summary = "Create room", description = "스터디룸 생성")
     public StudyRoomApiResponse createRoom(RoomCreateRequestDto requestDto, HttpSession httpSession) throws SQLException {
         int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
         StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(), requestDto.getTotal(), memberSeqId);
@@ -30,6 +34,7 @@ public class StudyRoomApiController {
 
     }
     @GetMapping("/rooms/{roomId}")
+    @Operation(summary = "Enter Room", description = "스터디룸 입장")
     public StudyRoomApiResponse enterRoom(@PathVariable int roomId, HttpSession httpSession) throws SQLException {
         int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
         StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId);
@@ -37,6 +42,7 @@ public class StudyRoomApiController {
         return StudyRoomApiResponse.from(studyRoom);
     }
     @DeleteMapping("/rooms/{roomId}")
+    @Operation(summary = "Exit Room", description = "스터디룸 퇴장")
     public StudyRoomApiResponse exitRoom(@PathVariable int roomId, HttpSession httpSession){
         int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
         StudyRoom studyRoom = studyRoomService.exitRoom(roomId, memberSeqId);

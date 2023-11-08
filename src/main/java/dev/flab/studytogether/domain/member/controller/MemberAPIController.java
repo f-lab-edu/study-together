@@ -4,33 +4,40 @@ import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.member.entity.Member;
 import dev.flab.studytogether.domain.member.service.MemberService;
 import dev.flab.studytogether.utils.SessionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
+
 import dev.flab.studytogether.domain.member.dto.MemberCreateRequestDto;
 
-@Controller
+
+@RequestMapping("/members")
+@Tag(name = "Member", description = "회원 관리 API")
+@RestController
 public class MemberAPIController {
 
     private final MemberService memberService;
 
-    @Autowired
-    public MemberAPIController(MemberService memberService){
+    public MemberAPIController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping("/members/join")
+    @PostMapping("/join")
     @PostMethodLog
-    public String create(MemberCreateRequestDto requestDto){
-        memberService.create(requestDto.toServiceDto());
+    @Operation(summary = "Create member", description = "회원가입")
+    public String join(MemberCreateRequestDto requestDto) {
+        memberService.createMember(requestDto.toServiceDto());
         return "redirect:/login";
     }
 
     @PostMapping("/login")
     @PostMethodLog
+    @Operation(summary = "login", description = "로그인")
     public String login(String id, String pw, HttpSession httpSession) {
         try {
             Member member = memberService.login(id, pw);
@@ -40,8 +47,11 @@ public class MemberAPIController {
         }
         return "main.html";
     }
+
+
     @GetMapping("/logout")
-    public void logout(HttpSession httpSession){
+    @Operation(summary = "logout", description = "로그아웃")
+    public void logout(HttpSession httpSession) {
         SessionUtil.logoutMemebr(httpSession);
     }
 
