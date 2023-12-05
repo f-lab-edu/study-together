@@ -4,19 +4,13 @@ import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.member.entity.Member;
 import dev.flab.studytogether.domain.member.service.MemberService;
 import dev.flab.studytogether.utils.SessionUtil;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
-import java.util.*;
-
 import dev.flab.studytogether.domain.member.dto.MemberCreateRequestDto;
 
-
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @Tag(name = "Member", description = "회원 관리 API")
 @RestController
 public class MemberAPIController {
@@ -48,6 +42,10 @@ public class MemberAPIController {
         return "main.html";
     }
 
+    @GetMapping("/checkDuplicate/{id}")
+    public boolean checkIdDuplicated(@PathVariable String id) {
+        return memberService.isIdExists(id);
+    }
 
     @GetMapping("/logout")
     @Operation(summary = "logout", description = "로그아웃")
