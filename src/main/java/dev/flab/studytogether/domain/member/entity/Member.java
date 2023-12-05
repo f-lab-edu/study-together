@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class Member {
+
     private int sequenceId;
     private final String id;
     private final String password;
