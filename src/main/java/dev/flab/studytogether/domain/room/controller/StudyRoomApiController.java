@@ -1,21 +1,24 @@
 package dev.flab.studytogether.domain.room.controller;
 
-
 import dev.flab.studytogether.aop.PostMethodLog;
+import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
+import dev.flab.studytogether.domain.room.dto.StudyRoomResponse;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.StudyRoomApiResponse;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
+import dev.flab.studytogether.response.ListApiResponse;
+import dev.flab.studytogether.response.SingleApiResponse;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @Tag(name = "Study Rooom", description = "스터디룸 API")
 public class StudyRoomApiController {
+
     private final StudyRoomService studyRoomService;
 
     @Autowired
@@ -50,26 +53,38 @@ public class StudyRoomApiController {
         return StudyRoomApiResponse.from(studyRoom);
     }
 
+    @GetMapping("api/v1/rooms/activated")
+    public ListApiResponse<StudyRoomResponse> getActivatedStudyRooms() {
+        List<StudyRoom> studyRooms = studyRoomService.getActivatedStudyRooms();
 
-    /*
-    =========== Dto =============
-    */
-    public class RoomCreateRequestDto{
-        private String roomName;
-        private int total;
+        List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
+                .map(this::convertToStudyRoomResponse)
+                .toList();
 
-        public RoomCreateRequestDto(String roomName, int total) {
-            this.roomName = roomName;
-            this.total = total;
-        }
-
-        public String getRoomName() {
-            return roomName;
-        }
-
-        public int getTotal() {
-            return total;
-        }
+        return ListApiResponse.ok(studyRoomResponses);
     }
 
+    @GetMapping("/api/v1/rooms/enter-available")
+    public ListApiResponse<StudyRoomResponse> getEnterAvailableStudyRooms() {
+        List<StudyRoom> studyRooms = studyRoomService.getEnterAvailableStudyRooms();
+
+        List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
+                .map(this::convertToStudyRoomResponse)
+                .toList();
+
+        return ListApiResponse.ok(studyRoomResponses);
+    }
+
+    private int getMemberSequenceId(HttpSession httpSession) {
+        return SessionUtil.getLoginMemberSequenceId(httpSession);
+    }
+
+    private StudyRoomResponse convertToStudyRoomResponse(StudyRoom studyRoom) {
+        return new StudyRoomResponse(
+                studyRoom.getRoomId(),
+                studyRoom.getRoomName(),
+                studyRoom.getMaxParticipants(),
+                studyRoom.getCurrentParticipants()
+        );
+    }
 }

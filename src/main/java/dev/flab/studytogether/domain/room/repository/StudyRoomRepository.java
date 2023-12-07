@@ -8,5 +8,6 @@ public interface StudyRoomRepository {
 
     StudyRoom save(String roomName, int total, int memberSeqId);
     Optional<StudyRoom> findByRoomId(int roomId);
-    int findTotalByRoomId(int roomId);
+    void update(int roomId, String roomName, int maxParticipants, int currentParticipants, int managerSequenceId);
+    List<StudyRoom> findByActivatedTrue();
 }

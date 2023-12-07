@@ -5,7 +5,8 @@ import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.repository.ParticipantRepository;
 import dev.flab.studytogether.domain.room.repository.StudyRoomRepository;
 import org.springframework.stereotype.Service;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -37,6 +38,18 @@ public class StudyRoomService {
         StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow();
         participantRepository.delete(studyRoom.getRoomId(), memberSeqId);
         return studyRoom;
+    }
+
+    public List<StudyRoom> getActivatedStudyRooms() {
+        return studyRoomRepository.findByActivatedTrue();
+    }
+
+    public List<StudyRoom> getEnterAvailableStudyRooms() {
+        List<StudyRoom> studyRooms = studyRoomRepository.findByActivatedTrue();
+
+        return studyRooms.stream()
+                .filter(studyRoom -> !studyRoom.isRoomFull())
+                .collect(Collectors.toList());
     }
 
 
