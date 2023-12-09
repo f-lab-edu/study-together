@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
+    @ExceptionHandler(BadRequestException.class)
     public SingleApiResponse<Void> badRequestExceptionHandle(BadRequestException e) {
         return SingleApiResponse.badRequest(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler
+    @ExceptionHandler(NotFoundException.class)
     public SingleApiResponse<Void> notFoundExceptionHandle(NotFoundException e) {
         return SingleApiResponse.notFound(e.getMessage());
     }
