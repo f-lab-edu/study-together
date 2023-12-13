@@ -31,7 +31,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         parameters.put("NICKNAME", member.getNickname());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        return Member.createWithSequenceId((Integer) key, member.getId(), member.getPassword(), member.getNickname());
+        return Member.createWithSequenceId(key.intValue(), member.getId(), member.getPassword(), member.getNickname());
     }
 
     @Override
