@@ -1,8 +1,10 @@
 package dev.flab.studytogether.domain.member.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class MemberResponse {
     private final int sequenceId;
     private final String id;
