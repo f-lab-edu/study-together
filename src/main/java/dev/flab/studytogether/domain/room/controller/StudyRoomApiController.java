@@ -58,7 +58,7 @@ public class StudyRoomApiController {
         List<StudyRoom> studyRooms = studyRoomService.getActivatedStudyRooms();
 
         List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
-                .map(this::convertToStudyRoomResponse)
+                .map(StudyRoomResponse::from)
                 .toList();
 
         return ListApiResponse.ok(studyRoomResponses);
@@ -69,7 +69,7 @@ public class StudyRoomApiController {
         List<StudyRoom> studyRooms = studyRoomService.getEnterAvailableStudyRooms();
 
         List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
-                .map(this::convertToStudyRoomResponse)
+                .map(StudyRoomResponse::from)
                 .toList();
 
         return ListApiResponse.ok(studyRoomResponses);
@@ -79,12 +79,5 @@ public class StudyRoomApiController {
         return SessionUtil.getLoginMemberSequenceId(httpSession);
     }
 
-    private StudyRoomResponse convertToStudyRoomResponse(StudyRoom studyRoom) {
-        return new StudyRoomResponse(
-                studyRoom.getRoomId(),
-                studyRoom.getRoomName(),
-                studyRoom.getMaxParticipants(),
-                studyRoom.getCurrentParticipants()
-        );
-    }
+
 }
