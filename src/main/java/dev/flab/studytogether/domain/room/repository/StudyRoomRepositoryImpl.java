@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -62,17 +63,21 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
     @Override
     public int findTotalByRoomId(int roomId) {
         return jdbcTemplate.queryForObject("select total from STUDY_ROOM where room_id = ?", Integer.class ,roomId);
+    @Override
+    public List<StudyRoom> findByActivatedTrue() {
+        String query = "SELECT * FROM STUDY_ROOM WHERE ACTIVATE = TRUE";
+        return jdbcTemplate.query(query, studyRoomRowMapper());
     }
 
 
     private RowMapper<StudyRoom> studyRoomRowMapper(){
-        return (rs, rowNum) -> new StudyRoom.Builder()
-                .roomID(rs.getInt("room_id"))
+        return (rs, rowNum) -> StudyRoom.builder()
+                .roomId(rs.getInt("room_id"))
                 .roomName(rs.getString("room_name"))
-                .total(rs.getInt("total"))
+                .maxParticipants(rs.getInt("max_participants"))
                 .createDate(rs.getDate("create_date").toLocalDate())
                 .activateStatus(StudyRoom.ActivateStatus.findByStatus(rs.getBoolean("activated")))
-                .managerSeqId(rs.getInt("manager_seq_id"))
+                .managerSequenceId(rs.getInt("manager_seq_id"))
                 .build();
 
     }

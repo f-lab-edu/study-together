@@ -70,5 +70,17 @@ public class StudyRoomService {
         return studyRoom;
     }
 
+    public List<StudyRoom> getActivatedStudyRooms() {
+        return studyRoomRepository.findByActivatedTrue();
+    }
+
+    public List<StudyRoom> getEnterAvailableStudyRooms() {
+        List<StudyRoom> studyRooms = studyRoomRepository.findByActivatedTrue();
+
+        return studyRooms.stream()
+                .filter(studyRoom -> !studyRoom.isRoomFull())
+                .collect(Collectors.toList());
+    }
+
 
 }
