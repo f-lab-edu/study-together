@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -28,16 +27,15 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ID", member.getId());
-        parameters.put("PW", member.getPw());
+        parameters.put("PW", member.getPassword());
         parameters.put("NICKNAME", member.getNickname());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
-        return new Member(key.intValue(), member.getId(), member.getPw(), member.getNickname());
+        return Member.createWithSequenceId(key.intValue(), member.getId(), member.getPassword(), member.getNickname());
     }
 
     @Override
     public Optional<Member> findByID(String id) {
-
         try {
             Member member = jdbcTemplate.queryForObject("select * from member where id = ?", memberRowMapper(), id);
             return Optional.of(member);
@@ -46,8 +44,8 @@ public class MemberRepositoryImpl implements MemberRepository {
         }
     }
 
-    private RowMapper<Member> memberRowMapper(){
-        return (rs, rowNum) -> new Member(
+    private RowMapper<Member> memberRowMapper() {
+        return (rs, rowNum) -> Member.createWithSequenceId(
                 rs.getInt("seq_id"),
                 rs.getString("id"),
                 rs.getString("pw"),
