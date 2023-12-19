@@ -4,16 +4,17 @@ import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
 import dev.flab.studytogether.domain.room.dto.StudyRoomResponse;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
-import dev.flab.studytogether.domain.room.StudyRoomApiResponse;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
-import dev.flab.studytogether.response.ListApiResponse;
-import dev.flab.studytogether.response.SingleApiResponse;
+
+import dev.flab.studytogether.response.ApiResponse;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
+
 import java.util.List;
+
 
 @RestController
 @Tag(name = "Study Rooom", description = "스터디룸 API")
@@ -21,7 +22,6 @@ public class StudyRoomApiController {
 
     private final StudyRoomService studyRoomService;
 
-    @Autowired
     public StudyRoomApiController(StudyRoomService studyRoomService) {
         this.studyRoomService = studyRoomService;
     }
@@ -29,50 +29,54 @@ public class StudyRoomApiController {
     @PostMapping("/api/v1/rooms")
     @PostMethodLog
     @Operation(summary = "Create room", description = "스터디룸 생성")
-    public StudyRoomApiResponse createRoom(RoomCreateRequestDto requestDto, HttpSession httpSession) throws SQLException {
-        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
+    public ApiResponse<StudyRoomResponse> createRoom(RoomCreateRequest requestDto, HttpSession httpSession) {
+        int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(), requestDto.getTotal(), memberSeqId);
 
-        return StudyRoomApiResponse.from(studyRoom);
-
+        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
     }
-    @GetMapping("/rooms/{roomId}")
+    @GetMapping("/api/v1/rooms/{roomId}")
     @Operation(summary = "Enter Room", description = "스터디룸 입장")
-    public StudyRoomApiResponse enterRoom(@PathVariable int roomId, HttpSession httpSession) throws SQLException {
-        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
+    public ApiResponse<StudyRoomResponse> enterRoom(@PathVariable int roomId, HttpSession httpSession){
+        int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId);
 
-        return StudyRoomApiResponse.from(studyRoom);
+        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
+
     }
-    @DeleteMapping("/rooms/{roomId}")
+    @DeleteMapping("/api/v1/rooms/{roomId}")
     @Operation(summary = "Exit Room", description = "스터디룸 퇴장")
-    public StudyRoomApiResponse exitRoom(@PathVariable int roomId, HttpSession httpSession){
-        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
+    public ApiResponse<StudyRoomResponse> exitRoom(@PathVariable int roomId, HttpSession httpSession){
+        int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.exitRoom(roomId, memberSeqId);
 
-        return StudyRoomApiResponse.from(studyRoom);
+        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
     }
 
+
     @GetMapping("api/v1/rooms/activated")
-    public ListApiResponse<StudyRoomResponse> getActivatedStudyRooms() {
+    public ApiResponse<List<StudyRoomResponse>> getActivatedStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomService.getActivatedStudyRooms();
 
         List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
                 .map(StudyRoomResponse::from)
                 .toList();
 
-        return ListApiResponse.ok(studyRoomResponses);
+        return ApiResponse.ok(studyRoomResponses);
     }
 
     @GetMapping("/api/v1/rooms/enter-available")
-    public ListApiResponse<StudyRoomResponse> getEnterAvailableStudyRooms() {
+    public ApiResponse<List<StudyRoomResponse>> getEnterAvailableStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomService.getEnterAvailableStudyRooms();
 
         List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
                 .map(StudyRoomResponse::from)
                 .toList();
 
-        return ListApiResponse.ok(studyRoomResponses);
+        return ApiResponse.ok(studyRoomResponses);
+
+    private int getMemberSequenceId(HttpSession httpSession) {
+        return SessionUtil.getLoginMemebrSeqId(httpSession);
     }
 
     private int getMemberSequenceId(HttpSession httpSession) {

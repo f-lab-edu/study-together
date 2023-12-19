@@ -1,5 +1,6 @@
 package dev.flab.studytogether.domain.room.dto;
 
+
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ public class StudyRoomResponse {
     private final int maxParticipants;
     private final int currentParticipants;
     private final int roomManagerSequenceId;
+
 
     private StudyRoomResponse(int roomId, String roomName, int maxParticipants, int currentParticipants, int roomManagerSequenceId) {
         this.roomId = roomId;
