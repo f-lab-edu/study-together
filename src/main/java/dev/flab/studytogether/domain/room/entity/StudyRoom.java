@@ -1,107 +1,48 @@
 package dev.flab.studytogether.domain.room.entity;
 
+import lombok.Builder;
+import lombok.Getter;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+@Builder
 public class StudyRoom {
-
+    @Getter
     private int roomId;
+    @Getter
     private String roomName;
-    private int total;
+    @Getter
+    private int maxParticipants;
+    @Getter
+    private int currentParticipants;
     private LocalDate createDate;
     private ActivateStatus activateStatus;
-    private int managerSeqId;
+    @Getter
+    private int managerSequenceId;
 
-    public static class Builder{
-        private int roomId;
-        private String roomName;
-        private int total;
-        private LocalDate createDate;
-        private ActivateStatus activateStatus;
-        private int managerSeqId;
-
-        public Builder(){}
-
-        public Builder roomID(int roomId){
-            this.roomId = roomId;
-            return this;
-        }
-
-        public Builder roomName(String roomName){
-            this.roomName = roomName;
-            return this;
-        }
-
-        public Builder total(int total){
-            this.total = total;
-            return this;
-        }
-
-        public Builder createDate(LocalDate createDate){
-            this.createDate = createDate;
-            return this;
-        }
-
-        public Builder activateStatus(ActivateStatus activateStatus){
-            this.activateStatus = activateStatus;
-            return this;
-        }
-
-        public Builder managerSeqId(int managerSeqId){
-            this.managerSeqId = managerSeqId;
-            return this;
-        }
-        public StudyRoom build(){
-            return new StudyRoom(this);
-        }
-
+    public void enterRoom() {
+        this.currentParticipants++;
     }
 
-    private StudyRoom(Builder builder){
-        roomId = builder.roomId;
-        roomName = builder.roomName;
-        total = builder.total;
-        createDate = builder.createDate;
-        activateStatus = builder.activateStatus;
-        managerSeqId = builder.managerSeqId;
+    public void exitRoom() {
+        this.currentParticipants--;
     }
 
-    public int getRoomId() {
-        return roomId;
+    public boolean isRoomFull() {
+        return this.maxParticipants == this.currentParticipants;
     }
 
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public LocalDate getCreateDate() {
-        return createDate;
-    }
-
-    public ActivateStatus getActivateStatus() {
-        return activateStatus;
-    }
-
-    public int getManagerSeqId() {
-        return managerSeqId;
-    }
-
-
-    public enum ActivateStatus{
+    public enum ActivateStatus {
         ACTIVATED(true),
         TERMINATED(false);
 
-        private boolean statusValue;
+        private final boolean statusValue;
 
         ActivateStatus(boolean statusValue) {
             this.statusValue = statusValue;
         }
 
-        public boolean getStatusValue(){
+        public boolean getStatusValue() {
             return statusValue;
         }
 
@@ -113,8 +54,6 @@ public class StudyRoom {
                     .orElseThrow(IllegalStateException::new);
         }
     }
-
-
 
 
 }
