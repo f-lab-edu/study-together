@@ -1,39 +1,34 @@
 package dev.flab.studytogether.domain.member.entity;
 
+import lombok.Getter;
+
+@Getter
 public class Member {
-    private int seqID;
+
+    private int sequenceId;
     private final String id;
-    private final String pw;
+    private final String password;
     private final String nickname;
 
-    public Member(int seqID, String id, String pw, String nickname){
-        this.seqID = seqID;
+    private Member(int sequenceId, String id, String password, String nickname){
+        this.sequenceId = sequenceId;
         this.id = id;
-        this.pw = pw;
+        this.password = password;
         this.nickname = nickname;
     }
 
-    private Member(String id, String pw, String nickname) {
+    private Member(String id, String password, String nickname) {
         this.id = id;
-        this.pw = pw;
+        this.password = password;
         this.nickname = nickname;
     }
 
-    public int getSeqID(){
-        return seqID;
+    public static Member createWithoutSequenceId(String id, String password, String nickname) {
+        return new Member(id, password, nickname);
     }
-    public String getId() {
-        return id;
+    
+    public static Member createWithSequenceId(int sequenceId, String id, String password, String nickname) {
+        return new Member(sequenceId, id, password, nickname);
     }
-    public String getPw(){
-        return pw;
-    }
-    public String getNickname(){
-        return nickname;
-    }
-    public static Member of(String id, String pw, String nickname) {
-        return new Member(id, pw, nickname);
-    }
-
-
+    
 }

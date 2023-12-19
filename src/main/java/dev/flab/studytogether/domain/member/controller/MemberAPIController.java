@@ -1,8 +1,10 @@
 package dev.flab.studytogether.domain.member.controller;
 
 import dev.flab.studytogether.aop.PostMethodLog;
+import dev.flab.studytogether.domain.member.dto.MemberResponse;
 import dev.flab.studytogether.domain.member.entity.Member;
 import dev.flab.studytogether.domain.member.service.MemberService;
+import dev.flab.studytogether.response.ApiResponse;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,22 +26,26 @@ public class MemberAPIController {
     @PostMapping("/join")
     @PostMethodLog
     @Operation(summary = "Create member", description = "회원가입")
-    public String join(MemberCreateRequestDto requestDto) {
-        memberService.createMember(requestDto.toServiceDto());
-        return "redirect:/login";
+    public ApiResponse<MemberResponse> join(MemberCreateRequestDto requestDto) {
+        Member member = memberService.createMember(requestDto.getId(), requestDto.getPassword(), requestDto.getNickname());
+        MemberResponse response = new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
+
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/login")
     @PostMethodLog
     @Operation(summary = "login", description = "로그인")
-    public String login(String id, String pw, HttpSession httpSession) {
-        try {
-            Member member = memberService.login(id, pw);
-            SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSeqID());
-        } catch (NoSuchElementException e) {
-            return "redirect:/login";
-        }
-        return "main.html";
+    public ApiResponse<MemberResponse> login(
+            @RequestParam String id,
+            @RequestParam String password,
+            HttpSession httpSession
+    ) {
+        Member member = memberService.login(id, password);
+        SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
+        MemberResponse response = new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
+
+        return ApiResponse.ok(response);
     }
 
     @GetMapping("/checkDuplicate/{id}")
