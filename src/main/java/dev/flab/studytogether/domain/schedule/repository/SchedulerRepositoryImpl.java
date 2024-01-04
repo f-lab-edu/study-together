@@ -14,17 +14,17 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class SchedulerRespositoryImpl implements SchedulerRepository {
+public class SchedulerRepositoryImpl implements SchedulerRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SchedulerRespositoryImpl(JdbcTemplate jdbcTemplate) {
+    public SchedulerRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Optional<Scheduler> find(int seqId, LocalDate date){
 
+    @Override
+    public Optional<Scheduler> findByIdAndDate(int seqId, LocalDate date) {
         try {
             Scheduler scheduler = jdbcTemplate.queryForObject(
                     "select * from scheduler where member_seq_id = ? and date = ?", schedulerRowMapper(), seqId, date);
@@ -34,11 +34,10 @@ public class SchedulerRespositoryImpl implements SchedulerRepository {
         catch (EmptyResultDataAccessException e){
             return Optional.empty();
         }
-
     }
 
     @Override
-    public Scheduler createScheduler(LocalDate date, int seqId) {
+    public Scheduler save(LocalDate date, int seqId) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("SCHEDULER").usingGeneratedKeyColumns("scheduler_seq");
 
