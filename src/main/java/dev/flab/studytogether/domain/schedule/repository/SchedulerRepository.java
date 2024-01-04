@@ -11,7 +11,7 @@ public interface SchedulerRepository {
 
 
 
-    Optional<Scheduler> findByIdAndDate(int seqId, LocalDate date);
+    Optional<Scheduler> find(int seqId, LocalDate date);
 
-    Scheduler save(LocalDate date, int seqId);
+    Scheduler createScheduler(LocalDate date, int seqId);
 }

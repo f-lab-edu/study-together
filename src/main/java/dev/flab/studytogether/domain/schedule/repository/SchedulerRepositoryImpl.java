@@ -56,6 +56,4 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
                 rs.getDate("date").toLocalDate(),
                 rs.getInt("member_seq_id"));
     }
-
 }
-
