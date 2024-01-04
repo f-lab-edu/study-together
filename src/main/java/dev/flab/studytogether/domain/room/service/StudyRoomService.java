@@ -31,13 +31,6 @@ public class StudyRoomService {
         return enterRoom(studyRoom.getRoomId(), memberSequenceId);
     }
 
-    public StudyRoom enterRoom(int roomId, int memberSeqId) throws SQLException {
-        if(participantRepository.countTotalParticipantsNum(roomId) < studyRoomRepository.findTotalByRoomId(roomId)) {
-            StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow();
-            participantRepository.save(studyRoom.getRoomId(), memberSeqId);
-            return studyRoom;
-        }
-        return null;
     public StudyRoom enterRoom(int roomId, int memberSequenceId) {
         StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow(() ->
                 new RoomEntryException("존재하지 않는 방입니다"));
@@ -61,7 +54,6 @@ public class StudyRoomService {
         );
 
         return studyRoom;
-    }
     }
 
     public StudyRoom exitRoom(int roomId, int memberSeqId){
