@@ -41,5 +41,15 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
         return jdbcTemplate.queryForObject(query, Integer.class);
     }
 
+    @Override
+    public boolean isMemberExists(int roomId, int memberSequenceId) {
+        return jdbcTemplate.queryForObject(
+                "SELECT EXISTS (SELECT 1 FROM PARTICIPANTS WHERE ROOM_ID =? AND SEQ_ID =?",
+                Boolean.class,
+                roomId,
+                memberSequenceId);
+
+    }
+
 
 }

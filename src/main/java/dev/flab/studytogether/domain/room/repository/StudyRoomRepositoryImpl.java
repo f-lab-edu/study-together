@@ -22,8 +22,9 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
     public StudyRoomRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
-    public StudyRoom save(String roomName, int total, int memberSeqId) {
+    public StudyRoom save(String roomName, int maxParticipants, int memberSeqId) {
         LocalDate createDate = LocalDate.now();
 
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -31,20 +32,20 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ROOM_NAME", roomName);
-        parameters.put("TOTAL", total);
+        parameters.put("MAX_PARTICIPANTS", maxParticipants);
         parameters.put("CREATE_DATE", createDate);
         parameters.put("ACTIVATED", StudyRoom.ActivateStatus.ACTIVATED.getStatusValue());
         parameters.put("MANAGER_SEQ_ID", memberSeqId);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new StudyRoom.Builder()
-                .roomID(key.intValue())
+        return StudyRoom.builder()
+                .roomId(key.intValue())
                 .roomName(roomName)
-                .total(total)
+                .maxParticipants(maxParticipants)
                 .createDate(createDate)
                 .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSeqId(memberSeqId)
+                .managerSequenceId(memberSeqId)
                 .build();
 
     }
@@ -61,11 +62,16 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
     }
 
     @Override
-    public int findTotalByRoomId(int roomId) {
-        return jdbcTemplate.queryForObject("select total from STUDY_ROOM where room_id = ?", Integer.class ,roomId);
+    public void update(int roomId, String roomName, int maxParticipants, int currentParticipants, int managerSequenceId) {
+        String updateQuery = "UPDATE STUDY_ROOM SET ROOM_NAME = ?, MAX_PARTICIPANTS = ?, CURRENT_PARTICIPANTS = ?, MANAGER_SEQ_ID = ? WHERE ROOM_ID = ?";
+
+        jdbcTemplate.update(updateQuery, roomName, maxParticipants, currentParticipants, managerSequenceId, roomId);
+    }
+
+
     @Override
     public List<StudyRoom> findByActivatedTrue() {
-        String query = "SELECT * FROM STUDY_ROOM WHERE ACTIVATE = TRUE";
+        String query = "SELECT * FROM STUDY_ROOM WHERE ACTIVATED = TRUE";
         return jdbcTemplate.query(query, studyRoomRowMapper());
     }
 

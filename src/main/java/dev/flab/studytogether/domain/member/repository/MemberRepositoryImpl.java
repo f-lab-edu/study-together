@@ -44,6 +44,14 @@ public class MemberRepositoryImpl implements MemberRepository {
         }
     }
 
+
+    @Override
+    public boolean isIdExists(String id) {
+        return jdbcTemplate.queryForObject(
+                "SELECT EXISTS (SELECT 1 FROM MEMBER WHERE id = ?)", Boolean.class, id);
+    }
+
+
     private RowMapper<Member> memberRowMapper() {
         return (rs, rowNum) -> Member.createWithSequenceId(
                 rs.getInt("seq_id"),
