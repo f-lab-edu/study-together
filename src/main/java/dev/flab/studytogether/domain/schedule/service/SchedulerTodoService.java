@@ -24,11 +24,11 @@ public class SchedulerTodoService {
     public SchedulerTodoApiResponse create(SchedulerTodoServiceDto serviceDto) {
 
         //seqId와 date로 해당 스케줄러 존재하는지 확인
-        Optional<Scheduler> result = schedulerRepository.find(serviceDto.getMemberSeqId(), serviceDto.getLocalDate());
+        Optional<Scheduler> result = schedulerRepository.findByIdAndDate(serviceDto.getMemberSeqId(), serviceDto.getLocalDate());
         Scheduler scheduler;
         //스케줄러 존재하지 않는다면 새로운 스케줄러 생성
         if(result.isEmpty()){
-            scheduler = schedulerRepository.createScheduler(serviceDto.getLocalDate(), serviceDto.getMemberSeqId());
+            scheduler = schedulerRepository.save(serviceDto.getLocalDate(), serviceDto.getMemberSeqId());
         }else{ //스케줄러 존재하면 기존 스케줄러에 todo 추가
             scheduler = result.get();
         }
