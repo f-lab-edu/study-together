@@ -78,7 +78,7 @@ public class SchedulerAPIController {
     }
     @PutMapping("/api/v1/todo/unchecked")
     @Operation(summary = "Change To-Do List Item Check Status", description = "지정된 투두 아이템의 체크 상태를 변경")
-    public SchedulerTodoApiResponse updateToUncomleted(TodoRequestDto requestDto, HttpSession httpSession){
+    public SchedulerTodoApiResponse updateToUncompleted(TodoRequestDto requestDto, HttpSession httpSession){
         int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
         return schedulerTodoService.updateToUncomleted(new SchedulerTodoServiceDto.Builder()
                 .memberSeqId(memberSeqId)
