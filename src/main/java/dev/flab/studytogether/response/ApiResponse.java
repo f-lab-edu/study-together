@@ -24,4 +24,12 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> ok(T data) {
         return of(HttpStatus.OK, HttpStatus.OK.name(), data);
     }
+
+    public static <T> ApiResponse<T> badRequest(String message) {
+        return of(HttpStatus.BAD_REQUEST, message, null);
+    }
+
+    public static <T> ApiResponse<T> notFound(String message) {
+        return of(HttpStatus.NOT_FOUND, message, null);
+    }
 }
