@@ -23,7 +23,9 @@ public class LoggingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        //request, response 캐시 가능하도록 wrapping
+        /*
+        request, response 캐시 가능하도록 wrapping
+        * */
         ContentCachingRequestWrapper httpServletRequest =
                 new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper httpServletResponse =
@@ -33,7 +35,12 @@ public class LoggingFilter implements Filter {
 
         String reqContentJSon = LoggingUtil.makeLoggingRequestJSON(httpServletRequest);
         String resContent = new String(httpServletResponse.getContentAsByteArray());
-        
+
+        /*
+        Body 값을 읽기 위해 복사해놓는 과정 필요
+        * */
+        httpServletResponse.copyBodyToResponse();
+
         log.info("request : {}", reqContentJSon);
         //response 추후 수정 예정
         log.info("response : {}", resContent);
