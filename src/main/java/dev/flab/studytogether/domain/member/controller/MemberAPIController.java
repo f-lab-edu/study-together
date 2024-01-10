@@ -4,10 +4,10 @@ import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.member.dto.MemberResponse;
 import dev.flab.studytogether.domain.member.entity.Member;
 import dev.flab.studytogether.domain.member.service.MemberService;
-import dev.flab.studytogether.response.ApiResponse;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import dev.flab.studytogether.domain.member.dto.MemberCreateRequestDto;
@@ -26,26 +26,26 @@ public class MemberAPIController {
     @PostMapping("/join")
     @PostMethodLog
     @Operation(summary = "Create member", description = "회원가입")
-    public ApiResponse<MemberResponse> join(MemberCreateRequestDto requestDto) {
-        Member member = memberService.createMember(requestDto.getId(), requestDto.getPassword(), requestDto.getNickname());
-        MemberResponse response = new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse join(MemberCreateRequestDto requestDto) {
+        Member member = memberService.create(requestDto.getId(), requestDto.getPassword(), requestDto.getNickname());
 
-        return ApiResponse.ok(response);
+        return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
     }
 
     @PostMapping("/login")
     @PostMethodLog
     @Operation(summary = "login", description = "로그인")
-    public ApiResponse<MemberResponse> login(
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse login(
             @RequestParam String id,
             @RequestParam String password,
             HttpSession httpSession
     ) {
         Member member = memberService.login(id, password);
         SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
-        MemberResponse response = new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
 
-        return ApiResponse.ok(response);
+        return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
     }
 
     @GetMapping("/checkDuplicate/{id}")

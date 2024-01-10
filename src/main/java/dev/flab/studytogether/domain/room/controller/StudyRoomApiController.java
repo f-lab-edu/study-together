@@ -5,14 +5,12 @@ import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
 import dev.flab.studytogether.domain.room.dto.StudyRoomResponse;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
-
-import dev.flab.studytogether.response.ApiResponse;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-
 import java.util.List;
 
 
@@ -21,67 +19,66 @@ import java.util.List;
 public class StudyRoomApiController {
 
     private final StudyRoomService studyRoomService;
+    private final HttpSession httpSession;
 
-    public StudyRoomApiController(StudyRoomService studyRoomService) {
+    public StudyRoomApiController(StudyRoomService studyRoomService, HttpSession httpSession) {
         this.studyRoomService = studyRoomService;
+        this.httpSession = httpSession;
     }
 
     @PostMapping("/api/v1/rooms")
     @PostMethodLog
     @Operation(summary = "Create room", description = "스터디룸 생성")
-    public ApiResponse<StudyRoomResponse> createRoom(RoomCreateRequest requestDto, HttpSession httpSession) {
+    @ResponseStatus(HttpStatus.OK)
+    public StudyRoomResponse createRoom(RoomCreateRequest requestDto, HttpSession httpSession) {
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(), requestDto.getTotal(), memberSeqId);
 
-        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
+        return StudyRoomResponse.from(studyRoom);
     }
     @GetMapping("/api/v1/rooms/{roomId}")
     @Operation(summary = "Enter Room", description = "스터디룸 입장")
-    public ApiResponse<StudyRoomResponse> enterRoom(@PathVariable int roomId, HttpSession httpSession){
+    @ResponseStatus(HttpStatus.OK)
+    public StudyRoomResponse enterRoom(@PathVariable int roomId, HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId);
 
-        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
-
+        return StudyRoomResponse.from(studyRoom);
     }
     @DeleteMapping("/api/v1/rooms/{roomId}")
     @Operation(summary = "Exit Room", description = "스터디룸 퇴장")
-    public ApiResponse<StudyRoomResponse> exitRoom(@PathVariable int roomId, HttpSession httpSession){
+    @ResponseStatus(HttpStatus.OK)
+    public StudyRoomResponse exitRoom(@PathVariable int roomId, HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.exitRoom(roomId, memberSeqId);
 
-        return ApiResponse.ok(new StudyRoomResponse(studyRoom.getRoomId(), studyRoom.getRoomName(), studyRoom.getMaxParticipants(), studyRoom.getCurrentParticipants(), studyRoom.getManagerSequenceId()));
+        return StudyRoomResponse.from(studyRoom);
     }
 
 
     @GetMapping("api/v1/rooms/activated")
-    public ApiResponse<List<StudyRoomResponse>> getActivatedStudyRooms() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<StudyRoomResponse> getActivatedStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomService.getActivatedStudyRooms();
 
-        List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
+        return studyRooms.stream()
                 .map(StudyRoomResponse::from)
                 .toList();
-
-        return ApiResponse.ok(studyRoomResponses);
     }
 
     @GetMapping("/api/v1/rooms/enter-available")
-    public ApiResponse<List<StudyRoomResponse>> getEnterAvailableStudyRooms() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<StudyRoomResponse> getEnterAvailableStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomService.getEnterAvailableStudyRooms();
 
-        List<StudyRoomResponse> studyRoomResponses = studyRooms.stream()
+        return studyRooms.stream()
                 .map(StudyRoomResponse::from)
                 .toList();
+    }
 
-        return ApiResponse.ok(studyRoomResponses);
 
     private int getMemberSequenceId(HttpSession httpSession) {
         return SessionUtil.getLoginMemebrSeqId(httpSession);
     }
-
-    private int getMemberSequenceId(HttpSession httpSession) {
-        return SessionUtil.getLoginMemberSequenceId(httpSession);
-    }
-
 
 }
