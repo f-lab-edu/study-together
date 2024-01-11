@@ -1,7 +1,10 @@
 package dev.flab.studytogether.domain.member.service;
 
+import org.springframework.stereotype.Service;
+
 import javax.servlet.http.HttpSession;
 
+@Service
 public class AuthService {
 
     public static final String ROOM_ADMIN_ROLE = "ROOM_ADMIN";
