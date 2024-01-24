@@ -43,6 +43,13 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // jQuery WebJar
+    implementation 'org.webjars:jquery:3.6.0'
+
+    // SockJS WebJar
+    implementation 'org.webjars:sockjs-client:1.0.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3'
+
 }
 
 tasks.named('test') {
