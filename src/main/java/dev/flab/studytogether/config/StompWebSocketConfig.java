@@ -13,8 +13,8 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-        // "/ws/rooms" 는 웹소캣 또는 SocketJS Client가 웹소캣 핸드셰이크 커넥션을 생성할 경로이다.
-        registry.addEndpoint("/stomp-chat")
+        // "stomp-room" 는 웹소캣 또는 SocketJS Client가 웹소캣 핸드셰이크 커넥션을 생성할 경로이다.
+        registry.addEndpoint("/stomp-room")
                 .setAllowedOrigins("http://localhost:8080")
                 .withSockJS();
     }
