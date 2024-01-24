@@ -56,7 +56,7 @@ public class StudyRoomApiController {
     }
 
 
-    @GetMapping("api/v1/rooms/activated")
+    @GetMapping("/api/v1/rooms/activated")
     @ResponseStatus(HttpStatus.OK)
     public List<StudyRoomResponse> getActivatedStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomService.getActivatedStudyRooms();
@@ -74,6 +74,13 @@ public class StudyRoomApiController {
         return studyRooms.stream()
                 .map(StudyRoomResponse::from)
                 .toList();
+    }
+
+    @GetMapping("/api/v1/rooms/info/{roomId}")
+    @ResponseStatus(HttpStatus.OK)
+    public StudyRoomResponse getRoomInfo(@PathVariable int roomId) {
+        StudyRoom studyRoom = studyRoomService.getRoomInformation(roomId);
+        return StudyRoomResponse.from(studyRoom);
     }
 
 
