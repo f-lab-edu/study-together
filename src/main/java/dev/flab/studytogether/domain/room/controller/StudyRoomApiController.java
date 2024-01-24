@@ -4,10 +4,12 @@ import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
 import dev.flab.studytogether.domain.room.dto.StudyRoomResponse;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
+import dev.flab.studytogether.domain.room.service.StudyRoomExitService;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
 import dev.flab.studytogether.utils.SessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
@@ -15,16 +17,13 @@ import java.util.List;
 
 
 @RestController
+@AllArgsConstructor
 @Tag(name = "Study Rooom", description = "스터디룸 API")
 public class StudyRoomApiController {
 
     private final StudyRoomService studyRoomService;
+    private final StudyRoomExitService studyRoomExitService;
     private final HttpSession httpSession;
-
-    public StudyRoomApiController(StudyRoomService studyRoomService, HttpSession httpSession) {
-        this.studyRoomService = studyRoomService;
-        this.httpSession = httpSession;
-    }
 
     @PostMapping("/api/v1/rooms")
     @PostMethodLog
@@ -45,12 +44,13 @@ public class StudyRoomApiController {
 
         return StudyRoomResponse.from(studyRoom);
     }
+
     @DeleteMapping("/api/v1/rooms/{roomId}")
     @Operation(summary = "Exit Room", description = "스터디룸 퇴장")
     @ResponseStatus(HttpStatus.OK)
     public StudyRoomResponse exitRoom(@PathVariable int roomId, HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
-        StudyRoom studyRoom = studyRoomService.exitRoom(roomId, memberSeqId);
+        StudyRoom studyRoom = studyRoomExitService.exitRoom(roomId, memberSeqId);
 
         return StudyRoomResponse.from(studyRoom);
     }
