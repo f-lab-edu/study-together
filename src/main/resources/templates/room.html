@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId');
+
+    document.title = `Room ${roomId}`;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const h1Element = document.querySelector('h1');
+      if (h1Element) {
+        h1Element.textContent = `Room ${roomId}`;
+      }
+    });
+
+  </script>
+  <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<h1></h1>
+<div class="row">
+  <div class="col-md-12">
+    <table id="conversation" class="table table-striped">
+      <thead>
+      <tr>
+        <th>Greetings</th>
+      </tr>
+      </thead>
+      <tbody id="greetings">
+      </tbody>
+    </table>
+  </div>
+</div>
+<div>
+  <h2>Participant List</h2>
+  <table id="participantTable">
+    <thead>
+    <tr>
+      <th>Participant</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 참가자 목록이 동적으로 추가 됨 -->
+    </tbody>
+  </table>
+</div>
+<div>
+  <button id="delegateButton">방장 위임하기</button>
+  <button id="exitButton">나가기</button>
+</div>
+<script>
+  var roomManagerSequenceId;
+
+  async function fetchData() {
+    try {
+      const response = await fetch('/api/v1/rooms/info/' + roomId);
+      const data = await response.json();
+
+      // 데이터 파싱 후 변수에 할당
+      roomName = data.data.roomName;
+      roomManagerSequenceId = data.data.roomManagerSequenceId;
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  }
+  // fetchData 함수 호출
+  fetchData();
+
+  $(function () {
+    const cookies = parseCookies();
+    const memberID = cookies['memberID'];
+    const memberSequenceID = cookies['sequenceID'];
+
+    displayButtonBasedOnRoomManagerStatus(memberSequenceID, roomManagerSequenceId);
+
+    // handshake
+    var sock = new SockJS("/stomp-room");
+    var client = Stomp.over(sock);
+
+    // connection이 맺어지면 실행된다.
+    client.connect({}, function () {
+      console.log("STOMP Connection");
+
+      // 클라이언트에서 '/subscribe/info/room/' + roomId 주제로 웹 소캣을 구독
+      client.subscribe('/subscribe/info/room/' + roomId, function (data) {
+        var roomInfo = JSON.parse(data.body);
+
+        // 방장 시퀀스 ID를 추출
+        roomManagerSequenceId = roomInfo.roomManagerSequenceId;
+
+        // 방장 여부 확인 후 버튼 표시 함수 호출
+        displayButtonBasedOnRoomManagerStatus(memberSequenceID, roomManagerSequenceId);
+      })
+
+      // 클라이언트에서 '/subscribe/greetings/room/' + roomId 주제로 웹 소켓을 구독
+      // 방 입장 시 greeting message 확인
+      client.subscribe('/subscribe/message/room/' + roomId, function (message) {
+        var messageContent = JSON.parse(message.body).message;
+
+        $("#greetings").append("<tr><td>" + messageContent + "</td></tr>");
+      });
+
+      // 클라이언트에서 '/subscribe/participants/room/' + roomId 주제로 웹 소켓을 구독
+      // 현재 방 참가 인원 확인
+      client.subscribe('/subscribe/participants/room/' + roomId, function (data) {
+        const participants = JSON.parse(data.body);
+        const participantTable = $('#participantTable tbody');
+
+        participantTable.empty();
+
+        participants.forEach(participant => {
+          var participantID = participant.memberID;
+          var participantSequenceID = participant.memberSequenceID;
+
+          var isRoomManager = (participantSequenceID == roomManagerSequenceId);
+          const roomManagerBadge = isRoomManager ? '<span class="room-manager-badge">방장</span>' : '';
+
+          const row = `<tr><td>${participantID}</td><td>${roomManagerBadge}</td></tr>`;
+          participantTable.append(row);
+        });
+      })
+
+      client.send('/publish/join/greetings', {},
+              JSON.stringify({
+                studyRoomID: roomId,
+                memberID: memberID,
+                memberSequenceID : memberSequenceID}
+      ));
+
+      sendGreeting();
+    });
+
+
+
+    function parseCookies() {
+      const cookies = document.cookie.split(';');
+      const cookieData = {};
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        const parts = cookie.split('=');
+        const name = parts[0];
+        cookieData[name] = parts[1];
+      }
+
+      return cookieData;
+    }
+
+    function sendGreeting() {
+      client.send('/publish/room/enter', {},
+              JSON.stringify({
+                studyRoomID: roomId,
+                memberID: memberID,
+                memberSequenceID : memberSequenceID}
+              ));
+    }
+
+    function sendExitMessage() {
+      client.send('/publish/room/exit', {},
+              JSON.stringify({
+                studyRoomID: roomId,
+                memberID: memberID,
+                memberSequenceID : memberSequenceID}
+              ));
+    }
+
+    function delegateRoomMangaerAuth() {
+      const authDelegateData = {
+        roomID: roomId,
+        delegatorID: memberID,
+        delegatorSequenceID: memberSequenceID
+      };
+      client.send('/publish/room/host-authorization/delegate', {},
+              JSON.stringify(authDelegateData));
+    }
+
+    document.getElementById('delegateButton').addEventListener('click', function() {
+      delegateRoomMangaerAuth();
+    });
+
+    function exitRoom() {
+      const apiUrl = '/api/v1/rooms/' + roomId;
+      fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        console.log('DELETE 요청이 성공적으로 완료되었습니다.');
+      }).then(sendExitMessage).then(window.location.href = `/rooms.html`);
+    }
+
+    document.getElementById('exitButton').addEventListener('click', function() {
+      exitRoom();
+    });
+
+    // 방장 권한에 따른 방장 권한 위임 버튼 디스플레이 여부
+    function displayButtonBasedOnRoomManagerStatus(memberSequenceID, roomManagerSequenceId) {
+      if (memberSequenceID == roomManagerSequenceId) {
+        document.getElementById('delegateButton').style.display = 'block';
+      } else {
+        document.getElementById('delegateButton').style.display = 'none';
+      }
+    }
+
+    window.onbeforeunload = function () {
+      exitRoom();
+    }
+  });
+
+
+</script>
+</body>
+</html>
