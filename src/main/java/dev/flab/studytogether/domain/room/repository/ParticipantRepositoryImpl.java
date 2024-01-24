@@ -56,5 +56,17 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     }
 
+    @Override
+    public List<Participant> findByRoomId(int roomId) {
+        String query = "select * from PARTICIPANT WHERE ROOM_ID =" + roomId;
+        return jdbcTemplate.query(query, participantRowMapper());
+    }
 
+    private RowMapper<Participant> participantRowMapper() {
+        return (rs, rowNum) -> new Participant(
+                    rs.getInt("ROOM_ID"),
+                    rs.getInt("SEQ_ID"),
+                    rs.getTimestamp("ENTRY_TIME").toLocalDateTime()
+            );
+    }
 }
