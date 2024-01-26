@@ -57,20 +57,6 @@ public class StudyRoomService {
         return studyRoom;
     }
 
-    public StudyRoom exitRoom(int roomId, int memberSeqId){
-        StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow();
-        participantRepository.delete(studyRoom.getRoomId(), memberSeqId);
-
-        studyRoom.exitRoom();
-        studyRoomRepository.update(studyRoom.getRoomId(),
-                studyRoom.getRoomName(),
-                studyRoom.getMaxParticipants(),
-                studyRoom.getCurrentParticipants(),
-                studyRoom.getManagerSequenceId());
-
-        return studyRoom;
-    }
-
     public List<StudyRoom> getActivatedStudyRooms() {
         return studyRoomRepository.findByActivatedTrue();
     }
