@@ -23,14 +23,14 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     }
 
     @Override
-    public void save(int roomId, int seqId, LocalDateTime now) {
+    public void save(int roomId, int seqId, LocalDateTime entryTime) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("PARTICIPANT");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ROOM_ID", roomId);
         parameters.put("SEQ_ID", seqId);
-        parameters.put("ENTRY_TIME", now);
+        parameters.put("ENTRY_TIME", entryTime);
 
         jdbcInsert.execute(new MapSqlParameterSource(parameters));
     }
