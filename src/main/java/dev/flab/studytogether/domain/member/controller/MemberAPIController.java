@@ -49,13 +49,7 @@ public class MemberAPIController {
         Member member = memberService.login(id, password);
         SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
 
-        Cookie idCookie = new Cookie("memberID", id);
-        idCookie.setPath("/");
-        response.addCookie(idCookie);
-
-        Cookie sequenceIDCookie = new Cookie("sequenceID", Integer.toString(member.getSequenceId()));
-        sequenceIDCookie.setPath("/");
-        response.addCookie(sequenceIDCookie);
+        setCookies(response, id, member.getSequenceId());
 
         return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
     }
@@ -71,6 +65,15 @@ public class MemberAPIController {
         SessionUtil.logoutMemebr(httpSession);
     }
 
+    private void setCookies(HttpServletResponse response, String id, int sequenceId) {
+        Cookie idCookie = new Cookie("memberID", id);
+        idCookie.setPath("/");
+        response.addCookie(idCookie);
+
+        Cookie sequenceIDCookie = new Cookie("sequenceID", Integer.toString(sequenceId));
+        sequenceIDCookie.setPath("/");
+        response.addCookie(sequenceIDCookie);
+    }
 
 }
 
