@@ -29,8 +29,7 @@ public class StompStudyRoomController {
         participants.add(new ParticipantResponse(message.getMemberID(), message.getMemberSequenceID()));
         messagingTemplate.convertAndSend("/subscribe/message/room/" + message.getStudyRoomID(), message);
 
-        sendRoomInfo(message.getStudyRoomID());
-        updateParticipants(message.getStudyRoomID());
+        updateRoomInfoAndParticipants(message.getStudyRoomID());
     }
 
     // 퇴장 메세지
@@ -42,8 +41,8 @@ public class StompStudyRoomController {
 
         messagingTemplate.convertAndSend("/subscribe/message/room/" + message.getStudyRoomID(), message);
 
-        sendRoomInfo(message.getStudyRoomID());
-        updateParticipants(message.getStudyRoomID());
+        updateRoomInfoAndParticipants(message.getStudyRoomID());
+
     }
 
     // 방장 권한 위임
@@ -51,8 +50,12 @@ public class StompStudyRoomController {
     public void hostAuthorizationDelegate(AuthDelegateDTO authDelegateDTO) {
         studyRoomExitService.exitRoom(authDelegateDTO.getRoomID(), authDelegateDTO.getDelegatorSequenceID());
 
-        sendRoomInfo(String.valueOf(authDelegateDTO.getRoomID()));
-        updateParticipants(String.valueOf(authDelegateDTO.getRoomID()));
+        updateRoomInfoAndParticipants(String.valueOf(authDelegateDTO.getRoomID()));
+    }
+
+    private void updateRoomInfoAndParticipants(String roomId) {
+        sendRoomInfo(roomId);
+        updateParticipants(roomId);
     }
 
     // 스터디룸 정보 클라이언트로 전송
@@ -67,4 +70,6 @@ public class StompStudyRoomController {
     private void updateParticipants(String roomId) {
         messagingTemplate.convertAndSend("/subscribe/participants/room/" + roomId, participants);
     }
+
+
 }
