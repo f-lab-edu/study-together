@@ -6,6 +6,7 @@ import dev.flab.studytogether.domain.room.exception.RoomEntryException;
 import dev.flab.studytogether.domain.room.repository.ParticipantRepository;
 import dev.flab.studytogether.domain.room.repository.StudyRoomRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class StudyRoomService {
 
     public StudyRoom createRoom(String roomName, int total, int memberSequenceId) {
         StudyRoom studyRoom = studyRoomRepository.save(roomName, total, memberSequenceId);
-        participantRepository.save(studyRoom.getRoomId(), memberSequenceId);
+        participantRepository.save(studyRoom.getRoomId(), memberSequenceId, LocalDateTime.now());
         authService.grantRoomAdminRole();
 
         return enterRoom(studyRoom.getRoomId(), memberSequenceId);
@@ -45,7 +46,7 @@ public class StudyRoomService {
 
         studyRoom.enterRoom();
 
-        participantRepository.save(roomId, memberSequenceId);
+        participantRepository.save(roomId, memberSequenceId, LocalDateTime.now());
         studyRoomRepository.update(roomId,
                 studyRoom.getRoomName(),
                 studyRoom.getMaxParticipants(),
@@ -53,12 +54,6 @@ public class StudyRoomService {
                 studyRoom.getManagerSequenceId()
         );
 
-        return studyRoom;
-    }
-
-    public StudyRoom exitRoom(int roomId, int memberSeqId){
-        StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow();
-        participantRepository.delete(studyRoom.getRoomId(), memberSeqId);
         return studyRoom;
     }
 
@@ -72,6 +67,10 @@ public class StudyRoomService {
         return studyRooms.stream()
                 .filter(studyRoom -> !studyRoom.isRoomFull())
                 .collect(Collectors.toList());
+    }
+
+    public StudyRoom getRoomInformation(int roomId) {
+        return studyRoomRepository.findByRoomId(roomId).orElseThrow();
     }
 
 

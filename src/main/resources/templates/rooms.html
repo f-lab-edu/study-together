@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Rooms</title>
+</head>
+<body>
+
+<div id="studyRoomsList"></div>
+
+<script>
+
+    // HTML에 표시할 목록을 생성하는 함수
+    function renderStudyRooms(apiResponse) {
+        const studyRoomsList = document.getElementById('studyRoomsList');
+
+        // 목록 초기화
+        studyRoomsList.innerHTML = '';
+
+        // 데이터 구조에 따라 처리
+        if (Array.isArray(apiResponse.data)) {
+            apiResponse.data.forEach(room => {
+                const roomItem = document.createElement('div');
+                roomItem.innerHTML = `
+                <p>Room ID: ${room.roomId}</p>
+                <p>Room Name: ${room.roomName}</p>
+                <p>Max Participants: ${room.maxParticipants}</p>
+                <p>Current Participants: ${room.currentParticipants}</p>
+                <p>Room Manager Sequence ID: ${room.roomManagerSequenceId}</p>
+                <button onclick="joinRoom(${room.roomId})">Join Room</button>
+                <hr>
+            `;
+                studyRoomsList.appendChild(roomItem);
+            });
+        } else {
+            console.error('Invalid data format');
+        }
+    }
+
+    // 방에 참가
+    function joinRoom(roomId) {
+        fetch('/api/v1/rooms/' + roomId)
+            .then((data) => renderStudyRooms(data))
+            .catch(error => console.error('Error fetching study rooms:', error));
+
+        // 페이지 이동
+        window.location.href = `/room.html?roomId=${roomId}`;
+    }
+
+    // API 호출 및 데이터 표시
+    fetch('/api/v1/rooms/enter-available')
+        .then((response) => response.json())
+        .then((data) => renderStudyRooms(data))
+        .catch(error => console.error('Error fetching study rooms:', error));
+</script>
+
+</body>
+</html>

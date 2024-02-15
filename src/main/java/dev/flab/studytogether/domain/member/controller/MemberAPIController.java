@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import dev.flab.studytogether.domain.member.dto.MemberCreateRequestDto;
 
@@ -40,10 +43,13 @@ public class MemberAPIController {
     public MemberResponse login(
             @RequestParam String id,
             @RequestParam String password,
-            HttpSession httpSession
+            HttpSession httpSession,
+            HttpServletResponse response
     ) {
         Member member = memberService.login(id, password);
         SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
+
+        setCookies(response, id, member.getSequenceId());
 
         return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
     }
@@ -59,6 +65,15 @@ public class MemberAPIController {
         SessionUtil.logoutMemebr(httpSession);
     }
 
+    private void setCookies(HttpServletResponse response, String id, int sequenceId) {
+        Cookie idCookie = new Cookie("memberID", id);
+        idCookie.setPath("/");
+        response.addCookie(idCookie);
+
+        Cookie sequenceIDCookie = new Cookie("sequenceID", Integer.toString(sequenceId));
+        sequenceIDCookie.setPath("/");
+        response.addCookie(sequenceIDCookie);
+    }
 
 }
 

@@ -32,6 +32,14 @@ public class StudyRoom {
         return this.maxParticipants == this.currentParticipants;
     }
 
+    public void changeRoomManager(int newManagerSequenceID){
+        this.managerSequenceId = newManagerSequenceID;
+    }
+
+    public boolean isRoomManager(int memberSequenceID) {
+        return this.managerSequenceId == memberSequenceID;
+    }
+
     public enum ActivateStatus {
         ACTIVATED(true),
         TERMINATED(false);

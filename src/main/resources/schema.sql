@@ -49,7 +49,8 @@ DROP TABLE IF EXISTS `STUDY_ROOM`;
 CREATE TABLE `STUDY_ROOM` (
                               `room_id`	int	NOT NULL,
                               `room_name`	varchar(20)	NOT NULL,
-                              `total`	int	NOT NULL,
+                              `max_participants`	int	NOT NULL,
+                              `current_participants` int NOT NULL,
                               `create_date`	DATE NOT NULL,
                               `activated`	BOOLEAN	NOT NULL	COMMENT 'T:활성화/F:종료',
                               `manager_seq_id`	int	NOT NULL
@@ -61,6 +62,7 @@ DROP TABLE IF EXISTS `PARTICIPANT`;
 
 CREATE TABLE `PARTICIPANT` (
                                `room_id`	int	NOT NULL,
-                               `seq_id`	int	NOT NULL
+                               `seq_id`	int	NOT NULL,
+                               `entry_time` DATETIME NOT NULL
 );
 

@@ -81,6 +81,7 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
                 .roomId(rs.getInt("room_id"))
                 .roomName(rs.getString("room_name"))
                 .maxParticipants(rs.getInt("max_participants"))
+                .currentParticipants(rs.getInt("current_participants"))
                 .createDate(rs.getDate("create_date").toLocalDate())
                 .activateStatus(StudyRoom.ActivateStatus.findByStatus(rs.getBoolean("activated")))
                 .managerSequenceId(rs.getInt("manager_seq_id"))
