@@ -6,6 +6,7 @@ import dev.flab.studytogether.domain.room.entity.Participant;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.repository.ParticipantRepository;
 import dev.flab.studytogether.domain.room.repository.StudyRoomRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
@@ -14,13 +15,19 @@ import java.util.List;
 import java.util.Optional;
 
 class StudyRoomExitServiceTest {
+
+    private StudyRoomExitService studyRoomExitService;
+
+    @BeforeEach
+    void setup() {
+        this.studyRoomExitService = new StudyRoomExitService(
+                new StubStudyRoomRepository(),
+                new StubParticipantRepository());
+    }
     @Test
     @DisplayName("방장이 퇴장할 경우 방장 권한이 방장 다음 입장 시간이 가장 빠른 유저에게 위임된다")
     void roomManagerExitTest() {
         //given
-        StudyRoomExitService studyRoomExitService =
-                new StudyRoomExitService(new StubStudyRoomRepository(), new StubParticipantRepository());
-
         int roomId = 1;
         int roomManagerMemberSequenceId = 1;
 
@@ -34,10 +41,6 @@ class StudyRoomExitServiceTest {
     @Test
     @DisplayName("유저가 방에서 퇴장할 경우 현재 참여자 수가 감소한다.")
     void roomExitTest() {
-        // given
-        StudyRoomExitService studyRoomExitService =
-                new StudyRoomExitService(new StubStudyRoomRepository(), new StubParticipantRepository());
-
         // when
         StudyRoom studyRoom = studyRoomExitService.exitRoom(1, 2);
 
