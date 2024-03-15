@@ -21,8 +21,11 @@ class StudyRoomExitServiceTest {
         StudyRoomExitService studyRoomExitService =
                 new StudyRoomExitService(new StubStudyRoomRepository(), new StubParticipantRepository());
 
+        int roomId = 1;
+        int roomManagerMemberSequenceId = 1;
+
         //when
-        StudyRoom studyRoom = studyRoomExitService.exitRoom(1, 1);
+        StudyRoom studyRoom = studyRoomExitService.exitRoom(roomId, roomManagerMemberSequenceId);
 
         //then
         assertEquals(2, studyRoom.getManagerSequenceId());
