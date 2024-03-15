@@ -6,6 +6,7 @@ import dev.flab.studytogether.domain.member.entity.Member;
 import dev.flab.studytogether.domain.member.exception.MemberNotFoundException;
 import dev.flab.studytogether.domain.member.exception.PasswordMismatchException;
 import dev.flab.studytogether.domain.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +14,17 @@ import java.util.*;
 
 class MemberServiceTest {
 
+    private MemberService memberService;
+
+    @BeforeEach
+    void setup() {
+        this.memberService = new MemberService(new FakeMemberRepository());
+    }
+
     @Test
     @DisplayName("회원가입을 하면 Member 객체를 반환한다.")
     void whenMemberCreatedThenReturnsMember() {
         //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         String id = "memberID";
         String password = "123";
         String nickname = "memberNickname";
@@ -36,8 +42,6 @@ class MemberServiceTest {
     @DisplayName("존재하지 않는 ID로 로그인 하면 MemberNotFoundException 예외를 던진다.")
     void whenLoginWithNonExistsIdThenThrowsMemberNotFoundException() {
         //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         String invalidId = "memberID2";
         String password = "123";
 
@@ -51,8 +55,6 @@ class MemberServiceTest {
     @DisplayName("올바르지 않은 password로 로그인 하면 PasswordMismatchException 예외를 던진다.")
     void whenLoginWithWrongPasswordThenThrowsPasswordMismatchException() {
         //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         String id = "memberID";
         String password = "123";
         String nickname = "memberNickname";
@@ -71,8 +73,6 @@ class MemberServiceTest {
     @DisplayName("로그인에 성공하면 Member를 반환한다.")
     void whenLoginIsSucceedThenReturnsMember() {
         //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         String id = "memberID";
         String password = "123";
         String nickname = "memberNickname";
@@ -91,8 +91,6 @@ class MemberServiceTest {
     @DisplayName("ID가 존재하면 true를 반환한다.")
     void whenIdExistsThenReturnsTrue() {
         //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         String id = "memberID";
         String password = "123";
         String nickname = "memberNickname";
@@ -106,11 +104,8 @@ class MemberServiceTest {
     @Test
     @DisplayName("ID가 존재하지 않으면 false를 반환한다.")
     void whenIdNotExistsThenReturnsFalse() {
-        //given
-        MemberService memberService = new MemberService(new FakeMemberRepository());
-
         //when, then
-        assertFalse(memberService.isIdExists("memberId"));
+        assertFalse(memberService.isIdExists("nonExistsMemberId"));
 
     }
 
@@ -120,7 +115,6 @@ class MemberServiceTest {
 
         @Override
         public Member save(Member member) {
-
             Member newMember = Member.createWithSequenceId(
                     getMaxSequenceID(),
                     member.getId(),
@@ -128,6 +122,7 @@ class MemberServiceTest {
                     member.getNickname());
 
             fakeMembers.add(newMember);
+
             return newMember;
         }
 
