@@ -133,12 +133,9 @@ class MemberServiceTest {
 
         @Override
         public Optional<Member> findByID(String id) {
-            for (Member member : fakeMembers) {
-                if (member.getId().equals(id)) {
-                    return Optional.of(member);
-                }
-            }
-            return Optional.empty();
+            return fakeMembers.stream()
+                    .filter(member -> member.getId().equals(id))
+                    .findFirst();
         }
 
         @Override
