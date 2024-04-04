@@ -1,25 +1,24 @@
 package dev.flab.studytogether.domain.schedule;
 
-public class SchedulerTodoApiResponse {
-    private int schedulerSeq;
-    private long todoID;
-    private String todoContent;
+import dev.flab.studytogether.domain.schedule.dto.SchedulerTodoDto;
+import lombok.Getter;
 
-    public SchedulerTodoApiResponse(int schedulerSeq, long todoID, String todoContent) {
-        this.schedulerSeq = schedulerSeq;
+@Getter
+public class SchedulerTodoApiResponse {
+    private final int schedulerSequenceId;
+    private final long todoID;
+    private final String todoContent;
+
+    private SchedulerTodoApiResponse(int schedulerSequenceId, long todoID, String todoContent) {
+        this.schedulerSequenceId = schedulerSequenceId;
         this.todoID = todoID;
         this.todoContent = todoContent;
     }
 
-    public int getSchedulerSeq() {
-        return schedulerSeq;
-    }
-
-    public long getTodoID() {
-        return todoID;
-    }
-
-    public String getTodoContent() {
-        return todoContent;
+    public static SchedulerTodoApiResponse from(SchedulerTodoDto schedulerTodoDto) {
+        return new SchedulerTodoApiResponse(
+                schedulerTodoDto.getSchedulerSequenceID(),
+                schedulerTodoDto.getTodoSequenceID(),
+                schedulerTodoDto.getTodoContent());
     }
 }
