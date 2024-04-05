@@ -22,9 +22,9 @@ public class SchedulerTodoService {
 
     public SchedulerTodoDto create(SchedulerTodoDto schedulerTodoDto) {
 
-        //sequenceID, schedulerDate로 해당 스케줄러 존재하는지 확인
+        //memberSequenceID, schedulerDate로 해당 스케줄러 존재하는지 확인
         Optional<Scheduler> result =
-                schedulerRepository.findByIdAndDate(
+                schedulerRepository.findByMemberIdAndDate(
                         schedulerTodoDto.getMemberSequenceId(),
                         schedulerTodoDto.getSchedulerDate()
                 );
