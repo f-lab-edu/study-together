@@ -23,7 +23,6 @@ public class StudyRoomApiController {
 
     private final StudyRoomService studyRoomService;
     private final StudyRoomExitService studyRoomExitService;
-    private final HttpSession httpSession;
 
     @PostMapping("/api/v1/rooms")
     @PostMethodLog
@@ -85,7 +84,7 @@ public class StudyRoomApiController {
 
 
     private int getMemberSequenceId(HttpSession httpSession) {
-        return SessionUtil.getLoginMemebrSeqId(httpSession);
+        return SessionUtil.getLoginMemberSequenceId(httpSession);
     }
 
 }
