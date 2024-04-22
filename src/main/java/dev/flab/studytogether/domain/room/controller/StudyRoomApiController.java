@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -28,26 +29,28 @@ public class StudyRoomApiController {
     @PostMethodLog
     @Operation(summary = "Create room", description = "스터디룸 생성")
     @ResponseStatus(HttpStatus.OK)
-    public StudyRoomResponse createRoom(RoomCreateRequest requestDto, HttpSession httpSession) {
+    public StudyRoomResponse createRoom(@RequestBody RoomCreateRequest requestDto, HttpSession httpSession) {
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(), requestDto.getTotal(), memberSeqId);
 
         return StudyRoomResponse.from(studyRoom);
     }
-    @GetMapping("/api/v1/rooms/{roomId}")
+    @GetMapping("/api/v1/rooms")
     @Operation(summary = "Enter Room", description = "스터디룸 입장")
     @ResponseStatus(HttpStatus.OK)
-    public StudyRoomResponse enterRoom(@PathVariable int roomId, HttpSession httpSession){
+    public StudyRoomResponse enterRoom(@RequestParam(name = "roomId") int roomId,
+                                       HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId);
 
         return StudyRoomResponse.from(studyRoom);
     }
 
-    @DeleteMapping("/api/v1/rooms/{roomId}")
+    @DeleteMapping("/api/v1/rooms")
     @Operation(summary = "Exit Room", description = "스터디룸 퇴장")
     @ResponseStatus(HttpStatus.OK)
-    public StudyRoomResponse exitRoom(@PathVariable int roomId, HttpSession httpSession){
+    public StudyRoomResponse exitRoom(@RequestParam(name = "roomId") int roomId,
+                                      HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
         StudyRoom studyRoom = studyRoomExitService.exitRoom(roomId, memberSeqId);
 
@@ -75,9 +78,9 @@ public class StudyRoomApiController {
                 .toList();
     }
 
-    @GetMapping("/api/v1/rooms/info/{roomId}")
+    @GetMapping("/api/v1/rooms/info")
     @ResponseStatus(HttpStatus.OK)
-    public StudyRoomResponse getRoomInfo(@PathVariable int roomId) {
+    public StudyRoomResponse getRoomInfo(@RequestParam(name = "roomId") int roomId) {
         StudyRoom studyRoom = studyRoomService.getRoomInformation(roomId);
         return StudyRoomResponse.from(studyRoom);
     }
