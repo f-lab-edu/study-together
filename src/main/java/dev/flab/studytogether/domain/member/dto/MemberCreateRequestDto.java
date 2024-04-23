@@ -9,4 +9,6 @@ public class MemberCreateRequestDto {
     private String id;
     private String password;
     private String nickname;
+
+    private MemberCreateRequestDto() {}
 }
