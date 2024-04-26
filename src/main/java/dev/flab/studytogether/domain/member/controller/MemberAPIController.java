@@ -30,7 +30,7 @@ public class MemberAPIController {
     @PostMethodLog
     @Operation(summary = "Create member", description = "회원가입")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse join(MemberCreateRequestDto requestDto) {
+    public MemberResponse join(@RequestBody MemberCreateRequestDto requestDto) {
         Member member = memberService.create(requestDto.getId(), requestDto.getPassword(), requestDto.getNickname());
 
         return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
@@ -47,22 +47,22 @@ public class MemberAPIController {
             HttpServletResponse response
     ) {
         Member member = memberService.login(id, password);
-        SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
+        SessionUtil.setLoginMemberSession(httpSession, member.getId(), member.getSequenceId());
 
         setCookies(response, id, member.getSequenceId());
 
         return new MemberResponse(member.getSequenceId(), member.getId(), member.getNickname());
     }
 
-    @GetMapping("/checkDuplicate/{id}")
-    public boolean checkIdDuplicated(@PathVariable String id) {
+    @GetMapping("/checkDuplicate")
+    public boolean checkIdDuplicated(@RequestParam String id) {
         return memberService.isIdExists(id);
     }
 
     @GetMapping("/logout")
     @Operation(summary = "logout", description = "로그아웃")
     public void logout(HttpSession httpSession) {
-        SessionUtil.logoutMemebr(httpSession);
+        SessionUtil.logoutMember(httpSession);
     }
 
     private void setCookies(HttpServletResponse response, String id, int sequenceId) {
