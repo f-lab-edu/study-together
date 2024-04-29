@@ -153,6 +153,7 @@ class StudyRoomApiControllerSpringContextTest {
     @Test
     @DisplayName("DELETE /api/v1/rooms api 메소드 RoomNotFoundException 예외 응답 테스트")
     void roomNotFoundExceptionResponseTest() throws Exception {
+        //given가
         int roomId = 1;
         int memberSequenceId = 1;
         String errorMessage = "방이 존재하지 않습니다.";
@@ -162,6 +163,7 @@ class StudyRoomApiControllerSpringContextTest {
         given(studyRoomExitService.exitRoom(anyInt(), anyInt()))
                 .willThrow(new RoomNotFoundException(errorMessage));
 
+        //when, then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/rooms")
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON)
