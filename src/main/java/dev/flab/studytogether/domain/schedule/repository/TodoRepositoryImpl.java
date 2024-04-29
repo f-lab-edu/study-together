@@ -53,8 +53,8 @@ public class TodoRepositoryImpl implements TodoRepository {
     }
 
     @Override
-    public void updateContent(String todoContent, int schdeulrSeq, long todoID) {
-        jdbcTemplate.update("update TODO set content = ? where todo_id = ? and scheduler_seq = ?",todoContent, todoID, schdeulrSeq);
+    public void updateContent(String todoContent, int schedulerSequenceId, long todoID) {
+        jdbcTemplate.update("update TODO set content = ? where todo_id = ? and scheduler_seq = ?",todoContent, todoID, schedulerSequenceId);
     }
 
     @Override

@@ -24,10 +24,10 @@ public class SchedulerRepositoryImpl implements SchedulerRepository {
 
 
     @Override
-    public Optional<Scheduler> findByIdAndDate(int seqId, LocalDate date) {
+    public Optional<Scheduler> findByMemberIdAndDate(int memberSequenceId, LocalDate date) {
         try {
             Scheduler scheduler = jdbcTemplate.queryForObject(
-                    "select * from scheduler where member_seq_id = ? and date = ?", schedulerRowMapper(), seqId, date);
+                    "select * from scheduler where member_seq_id = ? and date = ?", schedulerRowMapper(), memberSequenceId, date);
 
             return Optional.of(scheduler);
         }
