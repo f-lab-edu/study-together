@@ -1,10 +1,13 @@
 package dev.flab.studytogether.domain.room.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class RoomCreateRequest {
+    private String roomName;
+    private int total;
 
-    private final String roomName;
-    private final int total;
+    private RoomCreateRequest() {}
 }
