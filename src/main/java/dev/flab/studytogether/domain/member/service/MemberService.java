@@ -6,8 +6,6 @@ import dev.flab.studytogether.domain.member.exception.PasswordMismatchException;
 import dev.flab.studytogether.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-
 @Service
 public class MemberService {
 
@@ -22,10 +20,11 @@ public class MemberService {
         return memberRepository.save(Member.createWithoutSequenceId(id, password, nickname));
     }
 
-    public Member login(String id, String pw){
-        Member member = memberRepository.findByID(id).orElseThrow(()-> new MemberNotFoundException("일치하는 ID가 없습니다."));
+    public Member login(String id, String password){
+        Member member = memberRepository.findByID(id)
+                        .orElseThrow(()-> new MemberNotFoundException("일치하는 ID가 없습니다."));
 
-        if(member.getPassword().equals(pw)){
+        if(member.isPasswordMatched(password)){
             return member;
         }
 
