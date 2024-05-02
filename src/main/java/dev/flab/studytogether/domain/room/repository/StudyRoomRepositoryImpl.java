@@ -33,6 +33,7 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ROOM_NAME", roomName);
         parameters.put("MAX_PARTICIPANTS", maxParticipants);
+        parameters.put("CURRENT_PARTICIPANTS", 1);
         parameters.put("CREATE_DATE", createDate);
         parameters.put("ACTIVATED", StudyRoom.ActivateStatus.ACTIVATED.getStatusValue());
         parameters.put("MANAGER_SEQ_ID", memberSeqId);
@@ -88,7 +89,4 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
                 .build();
 
     }
-
-
-
 }
