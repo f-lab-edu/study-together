@@ -40,28 +40,5 @@ public class StudyRoom {
         return this.managerSequenceId == memberSequenceID;
     }
 
-    public enum ActivateStatus {
-        ACTIVATED(true),
-        TERMINATED(false);
-
-        private final boolean statusValue;
-
-        ActivateStatus(boolean statusValue) {
-            this.statusValue = statusValue;
-        }
-
-        public boolean getStatusValue() {
-            return statusValue;
-        }
-
-
-        public static ActivateStatus findByStatus(final boolean status) {
-            return Arrays.stream(ActivateStatus.values())
-                    .filter(e -> e.statusValue == status)
-                    .findFirst()
-                    .orElseThrow(IllegalStateException::new);
-        }
-    }
-
 
 }

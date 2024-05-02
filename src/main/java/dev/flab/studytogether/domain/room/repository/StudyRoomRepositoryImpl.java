@@ -1,5 +1,6 @@
 package dev.flab.studytogether.domain.room.repository;
 
+import dev.flab.studytogether.domain.room.entity.ActivateStatus;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,7 +36,7 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
         parameters.put("MAX_PARTICIPANTS", maxParticipants);
         parameters.put("CURRENT_PARTICIPANTS", 1);
         parameters.put("CREATE_DATE", createDate);
-        parameters.put("ACTIVATED", StudyRoom.ActivateStatus.ACTIVATED.getStatusValue());
+        parameters.put("ACTIVATED", ActivateStatus.ACTIVATED.getStatusValue());
         parameters.put("MANAGER_SEQ_ID", memberSeqId);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -45,7 +46,7 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
                 .roomName(roomName)
                 .maxParticipants(maxParticipants)
                 .createDate(createDate)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .managerSequenceId(memberSeqId)
                 .build();
 
@@ -84,7 +85,7 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
                 .maxParticipants(rs.getInt("max_participants"))
                 .currentParticipants(rs.getInt("current_participants"))
                 .createDate(rs.getDate("create_date").toLocalDate())
-                .activateStatus(StudyRoom.ActivateStatus.findByStatus(rs.getBoolean("activated")))
+                .activateStatus(ActivateStatus.findByStatus(rs.getBoolean("activated")))
                 .managerSequenceId(rs.getInt("manager_seq_id"))
                 .build();
 
