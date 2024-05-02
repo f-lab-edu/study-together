@@ -30,5 +30,9 @@ public class Member {
     public static Member createWithSequenceId(int sequenceId, String id, String password, String nickname) {
         return new Member(sequenceId, id, password, nickname);
     }
+
+    public boolean isPasswordMatched(String password) {
+        return this.password.equals(password);
+    }
     
 }
