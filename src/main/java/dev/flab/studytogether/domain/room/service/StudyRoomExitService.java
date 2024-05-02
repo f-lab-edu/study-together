@@ -47,7 +47,7 @@ public class StudyRoomExitService {
         Optional<Participant> nextAdmin =
                 findNextAdmin(currentAdminSequenceID, studyRoom.getRoomId());
 
-        nextAdmin.ifPresent(participant -> studyRoom.changeRoomManager(participant.getSeqId()));
+        nextAdmin.ifPresent(participant -> studyRoom.changeRoomManager(participant.getMemberSequenceId()));
     }
 
     // 권한 위임할 유저 찾는 메서드
@@ -56,7 +56,7 @@ public class StudyRoomExitService {
 
         // 입장 시간이 가장 빠른 유저에게 위임
         return participants.stream()
-                .filter(participant -> participant.getSeqId() != currentAdminSequenceID)
-                .min(Comparator.comparing(Participant::getEntryTime));
+                .filter(participant -> participant.getMemberSequenceId() != currentAdminSequenceID)
+                .min(Comparator.comparing(Participant::getRoomEntryTime));
     }
 }
