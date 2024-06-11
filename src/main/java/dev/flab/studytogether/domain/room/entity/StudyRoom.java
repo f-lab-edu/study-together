@@ -2,43 +2,72 @@ package dev.flab.studytogether.domain.room.entity;
 
 import lombok.Builder;
 import lombok.Getter;
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Builder
+@Getter
 public class StudyRoom {
-    @Getter
-    private int roomId;
-    @Getter
+    private long roomId;
     private String roomName;
-    @Getter
     private int maxParticipants;
-    @Getter
-    private int currentParticipants;
-    private LocalDate createDate;
+    private LocalDateTime roomCreateDateTime;
+    private Participants participants;
     private ActivateStatus activateStatus;
-    @Getter
-    private int managerSequenceId;
 
-    public void enterRoom() {
-        this.currentParticipants++;
+    public void enterRoom(Participant participant) {
+        participants.addParticipant(participant);
     }
 
-    public void exitRoom() {
-        this.currentParticipants--;
+    public void exitRoom(Participant participant) {
+        participants.removeParticipant(participant);
     }
 
     public boolean isRoomFull() {
-        return this.maxParticipants == this.currentParticipants;
+        return this.maxParticipants == participants.getCurrentParticipantsCount();
     }
 
-    public void changeRoomManager(int newManagerSequenceID){
-        this.managerSequenceId = newManagerSequenceID;
+    public void changeRoomManager(){
+        Participant currentRoomManager = participants.getRoomManger();
+        Optional<Participant> nextRoomManager = findNextManager();
+
+        if (nextRoomManager.isEmpty()) {
+            throw new NoSuchElementException("방장 권한을 위임할 사용자가 존재하지 않습니다.");
+        }
+
+        changeParticipantRole(currentRoomManager, ParticipantRole.ORDINARY_PARTICIPANT);
+        changeParticipantRole(nextRoomManager.get(), ParticipantRole.ROOM_MANAGER);
     }
 
-    public boolean isRoomManager(int memberSequenceID) {
-        return this.managerSequenceId == memberSequenceID;
+    private Optional<Participant> findNextManager() {
+        return participants.getParticipants()
+                .stream()
+                .filter(participant -> !participant.getParticipantRole().equals(ParticipantRole.ROOM_MANAGER))
+                .min(Comparator.comparing(Participant::getRoomEntryTime));
     }
 
+    public boolean isRoomManager(Participant participant) {
+        return participants.getRoomManger().equals(participant);
+    }
 
+    public boolean isMemberExists(Participant participant) {
+        return participants.hasParticipant(participant);
+    }
+
+    public int getCurrentParticipantsCount() {
+        return participants.getCurrentParticipantsCount();
+    }
+
+    public Participant getRoomManager() {
+        return participants.getRoomManger();
+    }
+
+    private void changeParticipantRole(Participant participant, ParticipantRole roleToChange) {
+        participants.getParticipants().stream()
+                .filter(p -> p.equals(participant))
+                .findFirst()
+                .ifPresent(p -> p.changeRole(roleToChange));
+    }
 }
