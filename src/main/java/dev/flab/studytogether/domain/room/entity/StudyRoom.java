@@ -21,8 +21,13 @@ public class StudyRoom {
         participants.addParticipant(participant);
     }
 
-    public void exitRoom(Participant participant) {
+    public StudyRoom exitRoom(Participant participant) {
+        if(participant.equals(participants.getRoomManger())) {
+            changeRoomManager();
+        }
+
         participants.removeParticipant(participant);
+        return this;
     }
 
     public boolean isRoomFull() {
