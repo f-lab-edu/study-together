@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudyRoomRepository {
-
-    StudyRoom save(String roomName, int total, int memberSeqId);
-    Optional<StudyRoom> findByRoomId(int roomId);
-    void update(int roomId, String roomName, int maxParticipants, int currentParticipants, int managerSequenceId);
+    StudyRoom save(StudyRoom studyRoom);
+    Optional<StudyRoom> findByRoomId(long roomId);
+    void update(StudyRoom studyRoom);
     List<StudyRoom> findByActivatedTrue();
 }

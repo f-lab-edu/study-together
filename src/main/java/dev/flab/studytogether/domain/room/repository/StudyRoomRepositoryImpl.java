@@ -25,35 +25,31 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
     }
 
     @Override
-    public StudyRoom save(String roomName, int maxParticipants, int memberSeqId) {
-        LocalDate createDate = LocalDate.now();
-
+    public StudyRoom save(StudyRoom studyRoom) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("STUDY_ROOM").usingGeneratedKeyColumns("ROOM_ID");
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("ROOM_NAME", roomName);
-        parameters.put("MAX_PARTICIPANTS", maxParticipants);
-        parameters.put("CURRENT_PARTICIPANTS", 1);
-        parameters.put("CREATE_DATE", createDate);
+        parameters.put("ROOM_NAME", studyRoom.getRoomName());
+        parameters.put("MAX_PARTICIPANTS", studyRoom.getMaxParticipants());
+        parameters.put("CURRENT_PARTICIPANTS", 0);
+        parameters.put("CREATE_DATE", studyRoom.getRoomCreateDateTime());
         parameters.put("ACTIVATED", ActivateStatus.ACTIVATED.getStatusValue());
-        parameters.put("MANAGER_SEQ_ID", memberSeqId);
+        parameters.put("MANAGER_SEQ_ID", studyRoom.getRoomManager().getMemberSequenceId());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
         return StudyRoom.builder()
                 .roomId(key.intValue())
-                .roomName(roomName)
-                .maxParticipants(maxParticipants)
-                .createDate(createDate)
+                .roomName(studyRoom.getRoomName())
+                .maxParticipants(studyRoom.getMaxParticipants())
+                .roomCreateDateTime(studyRoom.getRoomCreateDateTime())
                 .activateStatus(ActivateStatus.ACTIVATED)
-                .managerSequenceId(memberSeqId)
                 .build();
-
     }
 
     @Override
-    public Optional<StudyRoom> findByRoomId(int roomId) {
+    public Optional<StudyRoom> findByRoomId(long roomId) {
         try {
             StudyRoom studyRoom = jdbcTemplate.queryForObject("select * from study_room where room_id = ?", studyRoomRowMapper(), roomId);
             assert studyRoom != null;
@@ -64,10 +60,20 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
     }
 
     @Override
-    public void update(int roomId, String roomName, int maxParticipants, int currentParticipants, int managerSequenceId) {
-        String updateQuery = "UPDATE STUDY_ROOM SET ROOM_NAME = ?, MAX_PARTICIPANTS = ?, CURRENT_PARTICIPANTS = ?, MANAGER_SEQ_ID = ? WHERE ROOM_ID = ?";
+    public void update(StudyRoom studyRoom) {
+        String updateQuery = "UPDATE STUDY_ROOM " +
+                "SET ROOM_NAME = ?, " +
+                "MAX_PARTICIPANTS = ?, " +
+                "CURRENT_PARTICIPANTS = ?, " +
+                "MANAGER_SEQ_ID = ? " +
+                "WHERE ROOM_ID = ?";
 
-        jdbcTemplate.update(updateQuery, roomName, maxParticipants, currentParticipants, managerSequenceId, roomId);
+        jdbcTemplate.update(updateQuery,
+                studyRoom.getRoomName(),
+                studyRoom.getMaxParticipants(),
+                studyRoom.getCurrentParticipantsCount(),
+                studyRoom.getRoomManager().getMemberSequenceId(),
+                studyRoom.getRoomId());
     }
 
 
@@ -83,11 +89,8 @@ public class StudyRoomRepositoryImpl implements StudyRoomRepository {
                 .roomId(rs.getInt("room_id"))
                 .roomName(rs.getString("room_name"))
                 .maxParticipants(rs.getInt("max_participants"))
-                .currentParticipants(rs.getInt("current_participants"))
-                .createDate(rs.getDate("create_date").toLocalDate())
+                .roomCreateDateTime(rs.getTimestamp("create_date").toLocalDateTime())
                 .activateStatus(ActivateStatus.findByStatus(rs.getBoolean("activated")))
-                .managerSequenceId(rs.getInt("manager_seq_id"))
                 .build();
-
     }
 }

@@ -1,8 +1,8 @@
 package dev.flab.studytogether.domain.room.service;
 
-import dev.flab.studytogether.domain.member.service.AuthService;
-import dev.flab.studytogether.domain.room.entity.StudyRoom;
+import dev.flab.studytogether.domain.room.entity.*;
 import dev.flab.studytogether.domain.room.exception.RoomEntryException;
+import dev.flab.studytogether.domain.room.exception.RoomNotFoundException;
 import dev.flab.studytogether.domain.room.repository.ParticipantRepository;
 import dev.flab.studytogether.domain.room.repository.StudyRoomRepository;
 import org.springframework.stereotype.Service;
@@ -16,43 +16,44 @@ public class StudyRoomService {
 
     private final StudyRoomRepository studyRoomRepository;
     private final ParticipantRepository participantRepository;
-    private final AuthService authService;
 
-    public StudyRoomService(StudyRoomRepository studyRoomRepository, ParticipantRepository participantRepository, AuthService authService) {
+    public StudyRoomService(StudyRoomRepository studyRoomRepository, ParticipantRepository participantRepository) {
         this.studyRoomRepository = studyRoomRepository;
         this.participantRepository = participantRepository;
-        this.authService = authService;
     }
 
-    public StudyRoom createRoom(String roomName, int total, int memberSequenceId) {
-        StudyRoom studyRoom = studyRoomRepository.save(roomName, total, memberSequenceId);
-        participantRepository.save(studyRoom.getRoomId(), memberSequenceId, LocalDateTime.now());
-        authService.grantRoomAdminRole();
+    public StudyRoom createRoom(String roomName, int maxParticipants, int memberSequenceId) {
+        StudyRoom studyRoom = studyRoomRepository.save(StudyRoom.builder()
+                                                            .roomName(roomName)
+                                                            .maxParticipants(maxParticipants)
+                                                            .roomCreateDateTime(LocalDateTime.now())
+                                                            .activateStatus(ActivateStatus.ACTIVATED)
+                                                            .build());
 
-        return enterRoom(studyRoom.getRoomId(), memberSequenceId);
+        return enterRoom(studyRoom.getRoomId(), memberSequenceId, ParticipantRole.ROOM_MANAGER);
     }
 
-    public StudyRoom enterRoom(int roomId, int memberSequenceId) {
-        StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId).orElseThrow(() ->
-                new RoomEntryException("존재하지 않는 방입니다"));
+    public StudyRoom enterRoom(long roomId, int memberSequenceId, ParticipantRole participantRole) {
+        StudyRoom studyRoom = findByRoomId(roomId);
 
         if (studyRoom.isRoomFull()) {
-            throw new RoomEntryException("정원이 초과하여 입장 불가합니다");
+            throw new RoomEntryException("정원이 초과하여 입장 불가합니다.");
         }
 
-        if (participantRepository.isMemberExists(roomId, memberSequenceId)) {
+        Participant participant =
+                new Participant(studyRoom.getRoomId(),
+                        memberSequenceId,
+                        participantRole,
+                        LocalDateTime.now());
+
+        if (studyRoom.isMemberExists(participant)) {
             throw new RoomEntryException("이미 입장 한 방입니다");
         }
 
-        studyRoom.enterRoom();
+        studyRoom.enterRoom(participant);
 
-        participantRepository.save(roomId, memberSequenceId, LocalDateTime.now());
-        studyRoomRepository.update(roomId,
-                studyRoom.getRoomName(),
-                studyRoom.getMaxParticipants(),
-                studyRoom.getCurrentParticipants(),
-                studyRoom.getManagerSequenceId()
-        );
+        participantRepository.save(participant);
+        studyRoomRepository.update(studyRoom);
 
         return studyRoom;
     }
@@ -69,8 +70,22 @@ public class StudyRoomService {
                 .collect(Collectors.toList());
     }
 
-    public StudyRoom getRoomInformation(int roomId) {
-        return studyRoomRepository.findByRoomId(roomId).orElseThrow();
+    public StudyRoom getRoomInformation(long roomId) {
+        return findByRoomId(roomId);
+    }
+
+    private StudyRoom findByRoomId(long roomId) {
+        StudyRoom studyRoom = studyRoomRepository.findByRoomId(roomId)
+                .orElseThrow(() -> new RoomEntryException("존재하지 않는 방입니다"));
+
+        return StudyRoom.builder()
+                .roomId(studyRoom.getRoomId())
+                .roomName(studyRoom.getRoomName())
+                .maxParticipants(studyRoom.getMaxParticipants())
+                .roomCreateDateTime(studyRoom.getRoomCreateDateTime())
+                .participants(new Participants(participantRepository.findByRoomId(roomId)))
+                .activateStatus(studyRoom.getActivateStatus())
+                .build();
     }
 
 

@@ -21,6 +21,6 @@ public enum ActivateStatus {
         return Arrays.stream(ActivateStatus.values())
                 .filter(e -> e.statusValue == status)
                 .findFirst()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

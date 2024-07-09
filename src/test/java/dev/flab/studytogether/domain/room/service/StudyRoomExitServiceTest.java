@@ -8,13 +8,10 @@ import dev.flab.studytogether.fakerepositories.FakeStudyRoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 class StudyRoomExitServiceTest {
-
     private StudyRoomExitService studyRoomExitService;
 
     @BeforeEach
@@ -55,17 +52,21 @@ class StudyRoomExitServiceTest {
         StudyRoom studyRoom = studyRoomExitService.exitRoom(roomId, roomManagerMemberSequenceId);
 
         //then
-        assertEquals(2, studyRoom.getManagerSequenceId());
+        assertEquals(2, studyRoom.getRoomManager().getMemberSequenceId());
     }
 
     @Test
     @DisplayName("유저가 방에서 퇴장할 경우 현재 참여자 수가 감소한다.")
     void roomExitTest() {
+        //given
+        int roomId = 1;
+        int memberSequenceId = 2;
+
         // when
-        StudyRoom studyRoom = studyRoomExitService.exitRoom(1, 2);
+        StudyRoom studyRoom = studyRoomExitService.exitRoom(roomId, memberSequenceId);
 
         // then
-        assertEquals(2, studyRoom.getCurrentParticipants());
+        assertEquals(2, studyRoom.getCurrentParticipantsCount());
     }
 }
 
