@@ -6,18 +6,18 @@ import lombok.Getter;
 
 @Getter
 public class StudyRoomResponse {
-    private final int roomId;
+    private final long roomId;
     private final String roomName;
     private final int maxParticipants;
-    private final int currentParticipants;
+    private final int currentParticipantsCount;
     private final int roomManagerSequenceId;
 
 
-    private StudyRoomResponse(int roomId, String roomName, int maxParticipants, int currentParticipants, int roomManagerSequenceId) {
+    private StudyRoomResponse(long roomId, String roomName, int maxParticipants, int currentParticipants, int roomManagerSequenceId) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.maxParticipants = maxParticipants;
-        this.currentParticipants = currentParticipants;
+        this.currentParticipantsCount = currentParticipants;
         this.roomManagerSequenceId = roomManagerSequenceId;
     }
 
@@ -25,7 +25,7 @@ public class StudyRoomResponse {
         return new StudyRoomResponse(studyRoom.getRoomId(),
                 studyRoom.getRoomName(),
                 studyRoom.getMaxParticipants(),
-                studyRoom.getCurrentParticipants(),
-                studyRoom.getManagerSequenceId());
+                studyRoom.getCurrentParticipantsCount(),
+                studyRoom.getRoomManager().getMemberSequenceId());
     }
 }
