@@ -3,6 +3,7 @@ package dev.flab.studytogether.domain.room.controller;
 import dev.flab.studytogether.aop.PostMethodLog;
 import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
 import dev.flab.studytogether.domain.room.dto.StudyRoomResponse;
+import dev.flab.studytogether.domain.room.entity.ParticipantRole;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.service.StudyRoomExitService;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
@@ -30,8 +31,11 @@ public class StudyRoomApiController {
     @Operation(summary = "Create room", description = "스터디룸 생성")
     @ResponseStatus(HttpStatus.OK)
     public StudyRoomResponse createRoom(@RequestBody RoomCreateRequest requestDto, HttpSession httpSession) {
-        int memberSeqId = getMemberSequenceId(httpSession);
-        StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(), requestDto.getTotal(), memberSeqId);
+        int memberSequenceId = getMemberSequenceId(httpSession);
+
+        StudyRoom studyRoom = studyRoomService.createRoom(requestDto.getRoomName(),
+                requestDto.getMaxParticipants(),
+                memberSequenceId);
 
         return StudyRoomResponse.from(studyRoom);
     }
@@ -41,7 +45,7 @@ public class StudyRoomApiController {
     public StudyRoomResponse enterRoom(@RequestParam(name = "roomId") int roomId,
                                        HttpSession httpSession){
         int memberSeqId = getMemberSequenceId(httpSession);
-        StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId);
+        StudyRoom studyRoom = studyRoomService.enterRoom(roomId, memberSeqId, ParticipantRole.ORDINARY_PARTICIPANT);
 
         return StudyRoomResponse.from(studyRoom);
     }
@@ -87,7 +91,7 @@ public class StudyRoomApiController {
 
 
     private int getMemberSequenceId(HttpSession httpSession) {
-        return SessionUtil.getLoginMemberSequenceId(httpSession);
+        return SessionUtil.getLoginMemebrSeqId(httpSession);
     }
 
 }
