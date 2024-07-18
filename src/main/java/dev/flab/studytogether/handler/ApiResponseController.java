@@ -11,13 +11,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 
 @RestControllerAdvice
-public class ApiResponseController implements ResponseBodyAdvice {
+public class ApiResponseController implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         ResponseStatus responseStatus = returnType.getMethodAnnotation(ResponseStatus.class);
 
-        return responseStatus != null && responseStatus.value().is2xxSuccessful();
+        return responseStatus != null &&
+                responseStatus.value().is2xxSuccessful() &&
+                returnType.getParameterType() != String.class &&
+                MappingJackson2MessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override
