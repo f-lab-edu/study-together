@@ -28,7 +28,7 @@ public class SchedulerTodoAPIController {
     @ResponseStatus(HttpStatus.CREATED)
     public SchedulerTodoApiResponse createScheduler(SchedulerCreateRequestDto requestDto,
                                                     HttpSession httpSession) {
-        int memberSequenceId = SessionUtil.getLoginMemberSequenceId(httpSession);
+        int memberSequenceId = SessionUtil.getLoginMemebrSeqId(httpSession);
 
         SchedulerTodoDto schedulerTodoDto = schedulerTodoService.create(SchedulerTodoDto.builder()
                 .memberSequenceId(memberSequenceId)
@@ -43,7 +43,7 @@ public class SchedulerTodoAPIController {
     @ResponseStatus(HttpStatus.OK)
     public SchedulerTodoApiResponse updateTodoContent(TodoRequestDto requestDto,
                                                       HttpSession httpSession) {
-        int memberSeqId = SessionUtil.getLoginMemberSequenceId(httpSession);
+        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
 
         SchedulerTodoDto schedulerTodoDto = schedulerTodoService.updateTodoContent(SchedulerTodoDto.builder()
                                                             .memberSequenceId(memberSeqId)
@@ -61,7 +61,7 @@ public class SchedulerTodoAPIController {
     public SchedulerTodoApiResponse deleteTodo(@PathVariable int schedulerSeq,
                                                @PathVariable long todoID,
                                                HttpSession httpSession) {
-        int memberSeqId = SessionUtil.getLoginMemberSequenceId(httpSession);
+        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
 
         SchedulerTodoDto schedulerTodoDto =
                 schedulerTodoService.deleteTodo(SchedulerTodoDto.builder()
@@ -76,7 +76,7 @@ public class SchedulerTodoAPIController {
     @Operation(summary = "Change To-Do List Item Check Status", description = "지정된 투두 아이템의 체크 상태를 변경")
     @ResponseStatus(HttpStatus.OK)
     public SchedulerTodoApiResponse updateToCompleted(TodoRequestDto requestDto, HttpSession httpSession){
-        int memberSeqId = SessionUtil.getLoginMemberSequenceId(httpSession);
+        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
 
         SchedulerTodoDto schedulerTodoDto = schedulerTodoService.updateToCompleted(SchedulerTodoDto.builder()
                 .memberSequenceId(memberSeqId)
@@ -90,7 +90,7 @@ public class SchedulerTodoAPIController {
     @Operation(summary = "Change To-Do List Item Check Status", description = "지정된 투두 아이템의 체크 상태를 변경")
     @ResponseStatus(HttpStatus.OK)
     public SchedulerTodoApiResponse updateToUncompleted(TodoRequestDto requestDto, HttpSession httpSession){
-        int memberSeqId = SessionUtil.getLoginMemberSequenceId(httpSession);
+        int memberSeqId = SessionUtil.getLoginMemebrSeqId(httpSession);
 
         SchedulerTodoDto schedulerTodoDto = schedulerTodoService.updateToUncompleted(SchedulerTodoDto.builder()
                 .memberSequenceId(memberSeqId)
