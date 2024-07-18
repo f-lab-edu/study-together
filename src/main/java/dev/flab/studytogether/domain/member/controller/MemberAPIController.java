@@ -61,8 +61,11 @@ public class MemberAPIController {
 
     @GetMapping("/logout")
     @Operation(summary = "logout", description = "로그아웃")
-    public void logout(HttpSession httpSession) {
-        SessionUtil.logoutMember(httpSession);
+    @ResponseStatus(HttpStatus.OK)
+    public String logout(HttpSession httpSession) {
+        SessionUtil.logoutMemebr(httpSession);
+
+        return "logged out successfully.";
     }
 
     private void setCookies(HttpServletResponse response, String id, int sequenceId) {
