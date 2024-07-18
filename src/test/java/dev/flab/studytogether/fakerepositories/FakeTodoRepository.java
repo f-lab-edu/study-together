@@ -3,6 +3,7 @@ package dev.flab.studytogether.fakerepositories;
 import dev.flab.studytogether.domain.schedule.entity.Scheduler;
 import dev.flab.studytogether.domain.schedule.entity.Todo;
 import dev.flab.studytogether.domain.schedule.repository.TodoRepository;
+import dev.flab.studytogether.enums.CompleteStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,7 @@ public class FakeTodoRepository implements TodoRepository {
                 getMaxTodoSequenceId() + 1,
                 scheduler.getSchedulerSeq(),
                 todoContent,
-                Todo.CompleteStatus.UNCOMPLETED);
+                CompleteStatus.UNCOMPLETED);
 
         fakeTodos.add(newTodo);
         return newTodo;
@@ -58,7 +59,7 @@ public class FakeTodoRepository implements TodoRepository {
                 .filter(todo -> todo.getTodoID() == todoID)
                 .findFirst()
                 .ifPresent(todo -> {
-                    Todo updateTodo = new Todo(todo.getTodoID(), todo.getSchedulerSeq(), todo.getTodoContent(), Todo.CompleteStatus.COMPLETED);
+                    Todo updateTodo = new Todo(todo.getTodoID(), todo.getSchedulerSeq(), todo.getTodoContent(), CompleteStatus.COMPLETED);
                     fakeTodos.remove(todo);
                     fakeTodos.add(updateTodo);
                 });
@@ -70,7 +71,7 @@ public class FakeTodoRepository implements TodoRepository {
                 .filter(todo -> todo.getTodoID() == todoID)
                 .findFirst()
                 .ifPresent(todo -> {
-                    Todo updateTodo = new Todo(todo.getTodoID(), todo.getSchedulerSeq(), todo.getTodoContent(), Todo.CompleteStatus.UNCOMPLETED);
+                    Todo updateTodo = new Todo(todo.getTodoID(), todo.getSchedulerSeq(), todo.getTodoContent(), CompleteStatus.UNCOMPLETED);
                     fakeTodos.remove(todo);
                     fakeTodos.add(updateTodo);
                 });

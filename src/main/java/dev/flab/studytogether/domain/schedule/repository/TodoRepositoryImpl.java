@@ -2,6 +2,7 @@ package dev.flab.studytogether.domain.schedule.repository;
 
 import dev.flab.studytogether.domain.schedule.entity.Scheduler;
 import dev.flab.studytogether.domain.schedule.entity.Todo;
+import dev.flab.studytogether.enums.CompleteStatus;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -29,7 +30,7 @@ public class TodoRepositoryImpl implements TodoRepository {
 
         jdbcInsert.withTableName("TODO").usingGeneratedKeyColumns("TODO_ID");
 
-        Todo todo = new Todo(scheduler.getSchedulerSeq(), todoContent, Todo.CompleteStatus.UNCOMPLETED);
+        Todo todo = new Todo(scheduler.getSchedulerSeq(), todoContent, CompleteStatus.UNCOMPLETED);
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("SCHEDULER_SEQ", todo.getSchedulerSeq());
@@ -38,7 +39,10 @@ public class TodoRepositoryImpl implements TodoRepository {
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return Todo.ofWithTodoID(key.longValue(), todo.getSchedulerSeq(), todo.getTodoContent(), todo.getCompleteStatus());
+        return Todo.ofWithTodoID(key.longValue(),
+                todo.getSchedulerSeq(),
+                todo.getTodoContent(),
+                todo.getCompleteStatus());
         }
 
     @Override
@@ -77,7 +81,7 @@ public class TodoRepositoryImpl implements TodoRepository {
                 rs.getLong("todo_id"),
                 rs.getInt("scheduler_seq"),
                 rs.getString("content"),
-                Todo.CompleteStatus.findByStatus(rs.getBoolean("completed")));
+                CompleteStatus.findByStatus(rs.getBoolean("completed")));
 
     }
 }
