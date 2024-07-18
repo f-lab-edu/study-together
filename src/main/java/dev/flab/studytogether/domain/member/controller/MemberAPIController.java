@@ -44,10 +44,9 @@ public class MemberAPIController {
             @RequestParam String id,
             @RequestParam String password,
             HttpSession httpSession,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         Member member = memberService.login(id, password);
-        SessionUtil.setLoginMemberSession(httpSession, member.getId(), member.getSequenceId());
+        SessionUtil.setloginMemberSession(httpSession, member.getId(), member.getSequenceId());
 
         setCookies(response, id, member.getSequenceId());
 
@@ -55,6 +54,7 @@ public class MemberAPIController {
     }
 
     @GetMapping("/checkDuplicate")
+    @ResponseStatus(HttpStatus.OK)
     public boolean checkIdDuplicated(@RequestParam String id) {
         return memberService.isIdExists(id);
     }
