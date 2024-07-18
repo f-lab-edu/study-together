@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
+import dev.flab.studytogether.domain.room.entity.ActivateStatus;
 import dev.flab.studytogether.domain.room.entity.StudyRoom;
 import dev.flab.studytogether.domain.room.service.StudyRoomExitService;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
@@ -22,11 +23,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -71,10 +71,8 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom = StudyRoom.builder()
                 .roomId(1)
                 .roomName(roomName)
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(0)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(memberSequenceId)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 17, 2))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(totalParticipantsNumber)
                 .build();
 
@@ -90,8 +88,8 @@ class StudyRoomApiControllerTest {
                 .andExpect(jsonPath("$.roomId").value(mockStudyRoom.getRoomId()))
                 .andExpect(jsonPath("$.roomName").value(mockStudyRoom.getRoomName()))
                 .andExpect(jsonPath("$.maxParticipants").value(mockStudyRoom.getMaxParticipants()))
-                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipants()))
-                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getManagerSequenceId()))
+                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipantsCount()))
+                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getRoomManager().getMemberSequenceId()))
                 .andDo(print());
 
         verify(studyRoomService, Mockito.times(1)).createRoom(roomName, totalParticipantsNumber, memberSequenceId);
@@ -135,14 +133,12 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom = StudyRoom.builder()
                 .roomId(1)
                 .roomName("My Test Room")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(2)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(memberSequenceId)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 18, 2))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(10)
                 .build();
 
-        given(studyRoomService.enterRoom(anyInt(), anyInt()))
+        given(studyRoomService.enterRoom(anyLong(), anyInt(), any()))
                 .willReturn(mockStudyRoom);
 
 
@@ -157,11 +153,11 @@ class StudyRoomApiControllerTest {
                 .andExpect(jsonPath("$.roomId").value(mockStudyRoom.getRoomId()))
                 .andExpect(jsonPath("$.roomName").value(mockStudyRoom.getRoomName()))
                 .andExpect(jsonPath("$.maxParticipants").value(mockStudyRoom.getMaxParticipants()))
-                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipants()))
-                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getManagerSequenceId()))
+                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipantsCount()))
+                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getRoomManager().getMemberSequenceId()))
                 .andDo(print());
 
-        verify(studyRoomService, Mockito.times(1)).enterRoom(1,1);
+        verify(studyRoomService, Mockito.times(1)).enterRoom(1,1, any());
     }
     
     @Test
@@ -196,10 +192,8 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom = StudyRoom.builder()
                 .roomId(1)
                 .roomName("My Test Room")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(2)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(memberSequenceId)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(10)
                 .build();
 
@@ -217,8 +211,8 @@ class StudyRoomApiControllerTest {
                 .andExpect(jsonPath("$.roomId").value(mockStudyRoom.getRoomId()))
                 .andExpect(jsonPath("$.roomName").value(mockStudyRoom.getRoomName()))
                 .andExpect(jsonPath("$.maxParticipants").value(mockStudyRoom.getMaxParticipants()))
-                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipants()))
-                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getManagerSequenceId()))
+                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipantsCount()))
+                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getRoomManager().getMemberSequenceId()))
                 .andDo(print());
 
         verify(studyRoomExitService,
@@ -252,20 +246,16 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom1 = StudyRoom.builder()
                 .roomId(1)
                 .roomName("My Test Room")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(2)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(1)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(10)
                 .build();
 
         StudyRoom mockStudyRoom2 = StudyRoom.builder()
                 .roomId(2)
                 .roomName("My Test Room2")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(3)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(4)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(15)
                 .build();
 
@@ -295,20 +285,16 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom1 = StudyRoom.builder()
                 .roomId(1)
                 .roomName("My Test Room")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(2)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(1)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(10)
                 .build();
 
         StudyRoom mockStudyRoom2 = StudyRoom.builder()
                 .roomId(2)
                 .roomName("My Test Room2")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(3)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(4)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(15)
                 .build();
 
@@ -340,10 +326,8 @@ class StudyRoomApiControllerTest {
         StudyRoom mockStudyRoom = StudyRoom.builder()
                 .roomId(1)
                 .roomName("My Test Room")
-                .createDate(LocalDate.of(2023, 2, 25))
-                .currentParticipants(2)
-                .activateStatus(StudyRoom.ActivateStatus.ACTIVATED)
-                .managerSequenceId(1)
+                .roomCreateDateTime(LocalDateTime.of(2023, 2, 25, 19, 3))
+                .activateStatus(ActivateStatus.ACTIVATED)
                 .maxParticipants(10)
                 .build();
 
@@ -358,8 +342,8 @@ class StudyRoomApiControllerTest {
                 .andExpect(jsonPath("$.roomId").value(mockStudyRoom.getRoomId()))
                 .andExpect(jsonPath("$.roomName").value(mockStudyRoom.getRoomName()))
                 .andExpect(jsonPath("$.maxParticipants").value(mockStudyRoom.getMaxParticipants()))
-                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipants()))
-                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getManagerSequenceId()))
+                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipantsCount()))
+                .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getRoomManager().getMemberSequenceId()))
                 .andDo(print());
 
         verify(studyRoomService, Mockito.times(1)).getRoomInformation(roomId);
