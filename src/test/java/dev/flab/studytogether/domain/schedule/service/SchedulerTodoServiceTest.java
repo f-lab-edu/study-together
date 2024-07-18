@@ -3,6 +3,7 @@ package dev.flab.studytogether.domain.schedule.service;
 import dev.flab.studytogether.domain.schedule.dto.SchedulerTodoDto;
 import dev.flab.studytogether.domain.schedule.entity.Scheduler;
 import dev.flab.studytogether.domain.schedule.entity.Todo;
+import dev.flab.studytogether.enums.CompleteStatus;
 import dev.flab.studytogether.fakerepositories.FakeSchedulerRepository;
 import dev.flab.studytogether.fakerepositories.FakeTodoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,7 +151,7 @@ class SchedulerTodoServiceTest {
         
         //then
         Todo todo = fakeTodoRepository.find(schedulerSequenceId, todoSequenceId).get();
-        assertEquals(Todo.CompleteStatus.COMPLETED, todo.getCompleteStatus());
+        assertEquals(CompleteStatus.COMPLETED, todo.getCompleteStatus());
     }
 
 
