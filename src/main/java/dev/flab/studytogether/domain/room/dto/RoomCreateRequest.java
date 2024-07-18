@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class RoomCreateRequest {
     private String roomName;
-    private int total;
+    private int maxParticipants;
 
     private RoomCreateRequest() {}
 }
