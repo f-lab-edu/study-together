@@ -18,6 +18,6 @@ public enum ParticipantRole {
         return Arrays.stream(ParticipantRole.values())
                 .filter(e -> e.roleName.equals(roleName))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(()-> new IllegalArgumentException("No role matched"));
     }
 }
