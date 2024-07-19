@@ -13,6 +13,11 @@ VALUES
     ('Room 3', 12, 7, '2024-04-28', TRUE, 3),
     ('Room 4', 6, 2, '2024-04-27', FALSE, 4);
 
+INSERT INTO PARTICIPANT (room_id, seq_id, role, entry_time)
+VALUES (1, 1, 'Study Room Manager', '2024-07-19 10:00:00');
+
+INSERT INTO PARTICIPANT (room_id, seq_id, role, entry_time)
+VALUES (1, 2, 'Ordinary Participant', '2024-07-19 10:05:00');
 
 INSERT INTO `Scheduler` (`date`, `member_seq_id`)
 VALUES

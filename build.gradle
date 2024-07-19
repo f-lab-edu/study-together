@@ -50,9 +50,9 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.0.2'
     implementation 'org.webjars:stomp-websocket:2.3.3'
 
+    testRuntimeOnly("com.h2database:h2")
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
-

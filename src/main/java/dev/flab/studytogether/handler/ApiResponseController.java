@@ -3,9 +3,9 @@ package dev.flab.studytogether.handler;
 import dev.flab.studytogether.response.ApiResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -20,8 +20,8 @@ public class ApiResponseController implements ResponseBodyAdvice<Object> {
 
         return responseStatus != null &&
                 responseStatus.value().is2xxSuccessful() &&
-                returnType.getParameterType() != String.class &&
-                MappingJackson2MessageConverter.class.isAssignableFrom(converterType);
+                returnType.getParameterType() != String.class
+                && MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override

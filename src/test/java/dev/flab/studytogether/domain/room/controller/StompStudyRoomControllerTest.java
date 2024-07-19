@@ -1,5 +1,7 @@
 package dev.flab.studytogether.domain.room.controller;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import dev.flab.studytogether.domain.room.dto.ParticipantResponse;
@@ -15,6 +17,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -29,16 +32,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql({"classpath:schema.sql", "classpath:test-data.sql"})
 class StompStudyRoomControllerTest {
     @LocalServerPort
     private int port;
     private String url;
     private StompSession stompSession;
     private ObjectMapper objectMapper;
-    private static String END_POINT_PREFIX = "/stomp-room";
+    private static final String END_POINT_PREFIX = "/stomp-room";
 
     @BeforeEach
     void setup() throws ExecutionException, InterruptedException, TimeoutException {
