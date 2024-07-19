@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import dev.flab.studytogether.domain.room.dto.RoomCreateRequest;
-import dev.flab.studytogether.domain.room.entity.ActivateStatus;
-import dev.flab.studytogether.domain.room.entity.StudyRoom;
+import dev.flab.studytogether.domain.room.entity.*;
 import dev.flab.studytogether.domain.room.service.StudyRoomExitService;
 import dev.flab.studytogether.domain.room.service.StudyRoomService;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,7 +88,7 @@ class StudyRoomApiControllerTest {
                 .andExpect(jsonPath("$.roomId").value(mockStudyRoom.getRoomId()))
                 .andExpect(jsonPath("$.roomName").value(mockStudyRoom.getRoomName()))
                 .andExpect(jsonPath("$.maxParticipants").value(mockStudyRoom.getMaxParticipants()))
-                .andExpect(jsonPath("$.currentParticipants").value(mockStudyRoom.getCurrentParticipantsCount()))
+                .andExpect(jsonPath("$.currentParticipantsCount").value(mockStudyRoom.getCurrentParticipantsCount()))
                 .andExpect(jsonPath("$.roomManagerSequenceId").value(mockStudyRoom.getRoomManager().getMemberSequenceId()))
                 .andDo(print());
 
@@ -104,7 +103,7 @@ class StudyRoomApiControllerTest {
         String roomName = "My Test Room";
         String wrongValue = "cannotConvertToIntValue";
 
-        String json = "{\"roomName\":\"" + roomName +"\",\"total\":\"" + wrongValue +"\"}";
+        String json = "{\"roomName\":\"" + roomName +"\",\"maxParticipants\":\"" + wrongValue +"\"}";
 
         MockHttpSession httpSession = new MockHttpSession();
         httpSession.setAttribute("seq_id", memberSequenceId);
