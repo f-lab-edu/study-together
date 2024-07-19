@@ -1,5 +1,7 @@
 package dev.flab.studytogether.domain.room.controller;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import dev.flab.studytogether.domain.room.dto.ParticipantResponse;
@@ -30,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql({"classpath:schema.sql", "classpath:test-data.sql"})
 class StompStudyRoomControllerTest {
@@ -40,7 +40,7 @@ class StompStudyRoomControllerTest {
     private String url;
     private StompSession stompSession;
     private ObjectMapper objectMapper;
-    private static String END_POINT_PREFIX = "/stomp-room";
+    private static final String END_POINT_PREFIX = "/stomp-room";
 
     @BeforeEach
     void setup() throws ExecutionException, InterruptedException, TimeoutException {
