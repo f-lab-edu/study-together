@@ -32,8 +32,8 @@ jobs:
 
       - name : Setting NCP CLI & Credentials
         run: |
-          wget https://www.ncloud.com/api/support/download/5/65
-          unzip 65
+          wget https://www.ncloud.com/api/support/download/5/65 -O ncloud_cli.zip
+          unzip ncloud_cli.zip -d ~/cli_linux
           mkdir ~/.ncloud
           echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" >> ~/.ncloud/configure
 
