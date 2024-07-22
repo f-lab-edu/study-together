@@ -36,7 +36,7 @@ jobs:
           unzip ncloud_cli.zip -d ~/cli_linux
           chmod -R 777 ~/cli_linux
           mkdir -p ~/.ncloud
-          echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" >> ~/.ncloud/configure
+          echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" > ~/.ncloud/configure
 
       - name: Verify ncloud CLI Installation
         run: |
