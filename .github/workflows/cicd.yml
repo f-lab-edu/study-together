@@ -32,7 +32,7 @@ jobs:
 
       - name : Setting NCP CLI & Credentials
         run: |
-          wget https://www.ncloud.com/api/support/download/5/65 -O ncloud_cli.zip
+          wget https://www.gov-ncloud.com/api/support/download/files/cli/GOV_CLI_1.1.18_20240222.zip
           unzip ncloud_cli.zip -d ~/cli_linux
           chmod -R 777 ~/cli_linux
           mkdir -p ~/.ncloud
