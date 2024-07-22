@@ -44,8 +44,7 @@ jobs:
           
       - name: Add Github Action Ip to Security group
         run: |
-          cd ~/cli_linux
-          find ~/cli_linux -name "ncloud"
+          cd ~/cli_linux/cli_linux
           ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 
       - name: SSH Remote Commands
