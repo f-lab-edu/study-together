@@ -44,7 +44,7 @@ jobs:
 
       - name: Check ncloud configure
         run: |
-          cd .ncloud
+          cd ~/.ncloud
           cat configure
 
       - name : Verify ncloud Access key
