@@ -34,18 +34,18 @@ jobs:
         run: |
           wget https://www.gov-ncloud.com/api/support/download/files/cli/GOV_CLI_1.1.18_20240222.zip
           unzip GOV_CLI_1.1.18_20240222.zip
-          chmod -R 777 ~/cli_linux
           mkdir -p ~/.ncloud
           echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" > ~/.ncloud/configure
 
       - name: Verify ncloud CLI Installation
         run: |
-          ls -l ~/cli_linux
+          ls -l ~/GOV_CLI_1.1.18_20240222/cli_linux
           find ~/cli_linux -name "ncloud"
 
       - name: Add Github Action Ip to Security group
         run: |
-          cd ~/cli_linux
+          chmod -R 777 ~/GOV_CLI_1.1.18_20240222/cli_linux
+          cd ~/GOV_CLI_1.1.18_20240222/cli_linux
           ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 
       - name: SSH Remote Commands
