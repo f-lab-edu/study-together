@@ -42,10 +42,15 @@ jobs:
           ls -l ~/cli_linux
           find ~/cli_linux -name "ncloud"
 
+      - name: Check ncloud configure
+        run: |
+          cd .ncloud
+          cat configure
+
       - name : Verify ncloud Access key
         run : |
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
-          ./ncloud server getZoneList --regionNo 1
+          ./ncloud server getRegionList
 
       - name: Add Github Action Ip to Security group
         run: |
