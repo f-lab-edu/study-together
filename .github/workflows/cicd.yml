@@ -32,34 +32,34 @@ jobs:
 
       - name : Setting NCP CLI & Credentials
         run: |
-          wget https://www.gov-ncloud.com/api/support/download/files/cli/GOV_CLI_1.1.18_20240222.zip
-          unzip GOV_CLI_1.1.18_20240222.zip
+          wget https://www.gov-ncloud.com/api/support/download/files/cli/GOV_CLI_1.1.18_20240222.zip -O ncloud_cli.zip
+          unzip ncloud_cli.zip -d ~/cli_linux
           mkdir -p ~/.ncloud
           echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" > ~/.ncloud/configure
 
       - name: Verify ncloud CLI Installation
         run: |
-          ls -l ~/GOV_CLI_1.1.18_20240222/cli_linux
+          ls -l ~/cli_linux
           find ~/cli_linux -name "ncloud"
-
-      - name: Add Github Action Ip to Security group
-        run: |
-          chmod -R 777 ~/GOV_CLI_1.1.18_20240222/cli_linux
-          cd ~/GOV_CLI_1.1.18_20240222/cli_linux
-          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
-
-      - name: SSH Remote Commands
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}
-          password: ${{ secrets.NCP_PASSWORD }}
-          port: ${{ secrets.NCP_PORT }}
-          script: |
-            echo "테스트 출력"
-
-      - name: Remove Github Action Ip to Security group
-        run: |
-          chmod -R 777 ~/cli_linux
-          cd ~/cli_linux
-          ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
+#
+#      - name: Add Github Action Ip to Security group
+#        run: |
+#          chmod -R 777 ~/GOV_CLI_1.1.18_20240222/cli_linux
+#          cd ~/GOV_CLI_1.1.18_20240222/cli_linux
+#          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
+#
+#      - name: SSH Remote Commands
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.NCP_HOST }}
+#          username: ${{ secrets.NCP_USERNAME }}
+#          password: ${{ secrets.NCP_PASSWORD }}
+#          port: ${{ secrets.NCP_PORT }}
+#          script: |
+#            echo "테스트 출력"
+#
+#      - name: Remove Github Action Ip to Security group
+#        run: |
+#          chmod -R 777 ~/cli_linux
+#          cd ~/cli_linux
+#          ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
