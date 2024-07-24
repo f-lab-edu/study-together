@@ -47,6 +47,7 @@ jobs:
           chmod -R 777 ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           chmod +x ncloud
+          chmod +x ./jre8/bin/java
           ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 
 #      - name: SSH Remote Commands
