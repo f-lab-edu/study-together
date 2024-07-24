@@ -42,8 +42,14 @@ jobs:
         run: |
           ls -l ~/cli_linux
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
-          ./ncloud help  # CLI 도움말 출력
-          
+
+      - name: Verify Command
+        run: |
+          cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
+          ./ncloud vserver help  # `vserver` 명령어 확인
+          ./ncloud vserver addAccessControlGroupInboundRule help  # `addAccessControlGroupInboundRule` 명령어 확인
+        
+
       - name: Add Github Action Ip to Security group
         run: |
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
