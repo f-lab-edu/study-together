@@ -44,6 +44,7 @@ jobs:
 
       - name : Verify ncloud Access key
         run : |
+          cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           ./ncloud server getRegionList
 
       - name: Add Github Action Ip to Security group
