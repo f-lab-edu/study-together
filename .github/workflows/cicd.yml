@@ -41,6 +41,7 @@ jobs:
       - name: Verify ncloud CLI Installation
         run: |
           ls -l ~/cli_linux
+          ./ncloud help
           
       - name: Add Github Action Ip to Security group
         run: |
