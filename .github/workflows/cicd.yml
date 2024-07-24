@@ -42,6 +42,10 @@ jobs:
           ls -l ~/cli_linux
           find ~/cli_linux -name "ncloud"
 
+      - name : Verify ncloud Access key
+        run : |
+          ./ncloud server getRegionList
+
       - name: Add Github Action Ip to Security group
         run: |
           chmod -R 777 ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
