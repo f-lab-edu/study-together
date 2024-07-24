@@ -41,11 +41,12 @@ jobs:
         run: |
           ls -l ~/cli_linux
           find ~/cli_linux -name "ncloud"
-#
-#      - name: Add Github Action Ip to Security group
-#        run: |
-#          chmod -R 777 ~/GOV_CLI_1.1.18_20240222/cli_linux
-#          cd ~/GOV_CLI_1.1.18_20240222/cli_linux
+
+      - name: Add Github Action Ip to Security group
+        run: |
+          chmod -R 777 ~/GOV_CLI_1.1.18_20240222/cli_linux
+          cd ~/GOV_CLI_1.1.18_20240222/cli_linux
+          chmod +x ncloud
 #          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 #
 #      - name: SSH Remote Commands
