@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script: |
-            echo "테스트 출력"
+            echo "테스트 출력."
 
       - name: Remove GitHub Action Ip to Security group
         run: |
