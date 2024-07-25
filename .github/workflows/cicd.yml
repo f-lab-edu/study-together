@@ -55,18 +55,18 @@ jobs:
           chmod +x ./jre8/bin/java
           ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'" "protocolTypeCode='TCP', ipBlock='0.0.0.0/0', portRange='8080'"
 
-#      - name: SSH Remote Commands
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.NCP_HOST }}
-#          username: ${{ secrets.NCP_USERNAME }}
-#          password: ${{ secrets.NCP_PASSWORD }}
-#          port: ${{ secrets.NCP_PORT }}
-#          script: |
-#            echo "테스트 출력"
-#
-#      - name: Remove GitHub Action Ip to Security group
-#        run: |
-#          chmod -R 777 ~/cli_linux
-#          cd ~/cli_linux
-#          ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.NCP_HOST }}
+          username: ${{ secrets.NCP_USERNAME }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          port: ${{ secrets.NCP_PORT }}
+          script: |
+            echo "테스트 출력"
+
+      - name: Remove GitHub Action Ip to Security group
+        run: |
+          chmod -R 777 ~/cli_linux
+          cd ~/cli_linux
+          ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
