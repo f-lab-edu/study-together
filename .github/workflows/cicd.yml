@@ -58,8 +58,9 @@ jobs:
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           chmod +x ncloud
           chmod +x ./jre8/bin/java
-#          ./ncloud vserver addAccessControlGroupInboundRule --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
           ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo 69011 --accessControlGroupNo 182567 --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='20.55.214.171./32', portRange='22'" "protocolTypeCode='TCP', ipBlock='20.55.213.171/32', portRange='82'"
+#         ./ncloud vserver addAccessControlGroupInboundRule --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
+
 #      - name: SSH Remote Commands
 #        uses: appleboy/ssh-action@v1.0.3
 #        with:
@@ -70,7 +71,7 @@ jobs:
 #          script: |
 #            echo "테스트 출력"
 #
-#      - name: Remove Github Action Ip to Security group
+#      - name: Remove GitHub Action Ip to Security group
 #        run: |
 #          chmod -R 777 ~/cli_linux
 #          cd ~/cli_linux
