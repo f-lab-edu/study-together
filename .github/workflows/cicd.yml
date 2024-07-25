@@ -59,7 +59,7 @@ jobs:
           chmod +x ncloud
           chmod +x ./jre8/bin/java
 #          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo 69011 --accessControlGroupNo 182567 --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='20.55.214.171/32', portRange='22'" "protocolTypeCode='TCP', ipBlock='20.55.213.172/32', portRange='82'"
-         ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'" "protocolTypeCode='TCP', ipBlock='0.0.0.0/0', portRange='8080'"
+          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'" "protocolTypeCode='TCP', ipBlock='0.0.0.0/0', portRange='8080'"
 
 #      - name: SSH Remote Commands
 #        uses: appleboy/ssh-action@v1.0.3
