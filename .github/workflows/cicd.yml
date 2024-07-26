@@ -65,17 +65,11 @@ jobs:
           password: ${{ secrets.NCP_PASSWORD }}
           port: ${{ secrets.NCP_PORT }}
           script: |
-            echo "테스트 출력."
+            cd ~/study-together-project/study-together
+            ./deploy.sh
 
       - name: Remove GitHub Action Ip to Security group
         run: |
           chmod -R 777 ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           cd ~/cli_linux/GOV_CLI_1.1.18_20240222/cli_linux
           ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'" 
- 
-          if [ $? -eq 0 ]; then
-            echo "첫 번째 규칙 삭제 성공"
-          else
-            echo "첫 번째 규칙 삭제 실패"
-            exit 1
-          fi
